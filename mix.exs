@@ -30,7 +30,7 @@ defmodule Elixometer.Mixfile do
         {:meck, github: "eproxus/meck", tag: "0.8.2", override: true},
         {:edown, github: "uwiger/edown", tag: "0.5", override: true},
         {:lager, github: "basho/lager", tag: "2.0.3", override: true},
-        {:exometer, github: "pinterest/exometer"}
+        {:exometer, github: "Feuerlabs/exometer", tag: "1.2"}
     ]
   end
 end
