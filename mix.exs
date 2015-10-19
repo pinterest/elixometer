@@ -28,9 +28,10 @@ defmodule Elixometer.Mixfile do
   defp deps do
     [
         {:meck, github: "eproxus/meck", tag: "0.8.2", override: true},
-        {:edown, github: "uwiger/edown", tag: "0.5", override: true},
+        {:edown, github: "uwiger/edown", tag: "0.7", override: true},
         {:lager, github: "basho/lager", tag: "2.0.3", override: true},
-        {:exometer, github: "Feuerlabs/exometer", tag: "1.2"}
+        {:exometer, github: "Feuerlabs/exometer", tag: "1.2"},
+        {:netlink, github: "Feuerlabs/netlink", ref: "d6e7188e", override: true},
     ]
   end
 end

@@ -1,7 +1,7 @@
 %{"afunix": {:git, "https://github.com/tonyrog/afunix.git", "37611258f5446a578391c23def6ca4565c4c67e7", [tag: "1.0"]},
   "amqp_client": {:git, "git://github.com/jbrisbin/amqp_client.git", "0878abe6b40cc202b35d86fae32698598c022f0d", [tag: "rabbitmq-3.3.5"]},
   "bear": {:git, "git://github.com/boundary/bear.git", "119234548783af19b8ec75c879c5062676b92571", [tag: "0.8.2"]},
-  "edown": {:git, "git://github.com/uwiger/edown.git", "d62ec85281e451a46ba30045917c119d65b72a84", [tag: "0.5"]},
+  "edown": {:git, "git://github.com/uwiger/edown.git", "b7c8eb0ac1859f8fce11cbfe3526f5ec83194776", [tag: "0.7"]},
   "exometer": {:git, "git://github.com/Feuerlabs/exometer.git", "08f005819dec8b7cdbfbff6ca21b845d66f9636c", [tag: "1.2"]},
   "exometer_collectd": {:git, "git://github.com/Feuerlabs/exometer_collectd.git", "e71e8e5f43e04ee3e4727e2a32f4952073a4530e", [tag: "1.0"]},
   "exometer_core": {:git, "git://github.com/Feuerlabs/exometer_core.git", "88588f26f226210a1fc9e70271d8a0611ba83d30", [tag: "1.2"]},
@@ -10,7 +10,7 @@
   "jiffy": {:git, "git://github.com/davisp/jiffy.git", "137d3d94b6ee10001d761d412cbbe7f665680c98", [ref: "0.13.3"]},
   "lager": {:git, "git://github.com/basho/lager.git", "b6b6cebcb27ccff8acc59ae775acebc2f52e4926", [tag: "2.0.3"]},
   "meck": {:git, "git://github.com/eproxus/meck.git", "dde759050eff19a1a80fd854d7375174b191665d", [tag: "0.8.2"]},
-  "netlink": {:git, "git://github.com/Feuerlabs/netlink.git", "e6d208c2d9ad0c16843584006812b9fc99b65d0a", [tag: "1.0"]},
+  "netlink": {:git, "git://github.com/Feuerlabs/netlink.git", "d6e7188e907015166afba09fbf2f433b9fe08360", [ref: "d6e7188e"]},
   "parse_trans": {:git, "git://github.com/uwiger/parse_trans.git", "82cc00264aa1bad8fc5c0739b7541feb4a843432", [tag: "2.9"]},
   "rabbit_common": {:git, "git://github.com/jbrisbin/rabbit_common.git", "9c1965273032ffb79ec0ff80b250e5d0b4608aa7", [tag: "rabbitmq-3.3.5"]},
   "setup": {:git, "git://github.com/uwiger/setup.git", "51ee7c9f64d2bbe9dcbb58c278e8fbfd4d0ca5e2", [tag: "1.4"]}}
