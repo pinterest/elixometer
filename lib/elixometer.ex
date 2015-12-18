@@ -139,17 +139,14 @@ defmodule Elixometer do
       key = case timer_info[:key] do
               :auto ->
                 # Convert a fully qualified module to an underscored representation.
-                # Elixir.Module.SubModule.SubSubModule will become
+                # Module.SubModule.SubSubModule will become
                 # module.sub_module.sub_sub_module
                 prefix = mod
-                |> Atom.to_string
+                |> inspect
                 |> String.replace(~r/([a-z])([A-Z])/, ~S"\1_\2")
                 |> String.downcase
-                |> String.split(".")
 
-                [_| rest] = prefix
-                rest = rest ++ [Atom.to_string(name)]
-                Enum.join(rest, ".")
+                "#{prefix}.#{name}"
 
               other -> other
             end
