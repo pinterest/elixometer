@@ -23,11 +23,14 @@ In one of your config files, set up an exometer reporter, and then register
 it to elixometer like this:
 
 ```elixir
+       config(:exometer, report: [reporters: [{:exometer_report_tty, []}]])
        config(:elixometer, reporter: :exometer_report_tty,
        	    env: Mix.env,
        	    metric_prefix: "myapp")
 ```
 Metrics are prepended with the `metric_prefix`, the type of metric and the environment name.
+
+The optional `update_frequency` key of the :elixometer config controls the interval between reports. By default this is set to `1000` ms in the `dev` environment and `20` ms in the `test` environment.
 
 ## Metrics
 

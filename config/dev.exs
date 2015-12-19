@@ -14,6 +14,6 @@ config :lager, [
   ]]
 
 config :elixometer,  reporter: :exometer_report_tty,
-update_frequency: 50000,
+update_frequency: 1000,
 env: Mix.env,
 metric_prefix: "elixometer"
