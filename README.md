@@ -1,6 +1,8 @@
 Elixometer
 ==========
 
+[![Build Status](https://travis-ci.org/pinterest/elixometer.svg?branch=master)](https://travis-ci.org/pinterest/elixometer)
+
 A light wrapper around exometer.
 
 Elixometer allows you to define metrics and subscribe them automatically
