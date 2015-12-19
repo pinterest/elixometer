@@ -27,7 +27,7 @@ it to elixometer like this:
        	    env: Mix.env,
        	    metric_prefix: "myapp")
 ```
-Metrics are prepented with the metric_prefix, the type of metric and the environment name.
+Metrics are prepended with the `metric_prefix`, the type of metric and the environment name.
 
 ## Metrics
 
