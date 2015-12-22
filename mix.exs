@@ -10,7 +10,17 @@ defmodule Elixometer.Mixfile do
 
   def application do
     [ mod: {Elixometer.App, []},
-      applications: [:logger, :exometer]]
+      applications: [:logger, :exometer],
+      env: default_config(Mix.env)
+    ]
+  end
+
+  def default_config(:test) do
+    [update_frequency: 20]
+  end
+
+  def default_config(_) do
+    [update_frequency: 1_000]
   end
 
   defp deps do

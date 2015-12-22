@@ -378,12 +378,12 @@ defmodule Elixometer do
     if not metric_subscribed?(name) do
       cfg = Application.get_all_env(:elixometer)
       reporter = cfg[:reporter]
-      delay = cfg[:update_frequency]
+      interval = cfg[:update_frequency]
 
       if reporter do
         :exometer.info(name)
         |> Keyword.get(:datapoints)
-        |> Enum.map(&(:exometer_report.subscribe(reporter, name, &1, delay)))
+        |> Enum.map(&(:exometer_report.subscribe(reporter, name, &1, interval)))
       end
       :ets.insert(@elixometer_table, {{:subscriptions, name}, true})
     end
