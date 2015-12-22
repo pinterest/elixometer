@@ -34,7 +34,7 @@ The optional `update_frequency` key of the :elixometer config controls the inter
 
 ## Metrics
 
-Defining metrics in elixometer is substantially easier than in exometer. Instead of defining and then updating a metric, just update it. Also, instead of providing a list of atoms, a metric is named with a period separated bitstring. Presently, Elixometer supports timers, histograms, gauges, and counters.
+Defining metrics in elixometer is substantially easier than in exometer. Instead of defining and then updating a metric, just update it. Also, instead of providing a list of atoms, a metric is named with a period separated bitstring. Presently, Elixometer supports timers, histograms, gauges, counters, and spirals.
 
 Timings may also be defined by annotating a function with a @timed annotation. This annotation takes a key argument, which tells elixometer what key to use. You  can specify `:auto` and a key will be generated from the module name and method name.
 
@@ -48,6 +48,11 @@ Updating a metric is similarly easy:
         # Updating a counter
         def counter_test(thingie) do
           update_counter("metrics_test.\#{thingie}.count", 1)
+        end
+
+        # Updating a spiral
+        def spiral_test(thingie) do
+          update_spiral("metrics_test.\#{thingie}.qps", 1)
         end
 
         # Timing a block of code in a function
