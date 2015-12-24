@@ -9,7 +9,7 @@
   "goldrush": {:git, "git://github.com/DeadZen/goldrush.git", "71e63212f12c25827e0c1b4198d37d5d018a7fec", [tag: "0.1.6"]},
   "jiffy": {:git, "git://github.com/davisp/jiffy.git", "137d3d94b6ee10001d761d412cbbe7f665680c98", [ref: "0.13.3"]},
   "lager": {:git, "https://github.com/basho/lager.git", "840acab51ebfb731de0137d9c6d41e7db4a12793", [tag: "2.1.0"]},
-  "meck": {:git, "https://github.com/eproxus/meck.git", "dde759050eff19a1a80fd854d7375174b191665d", [tag: "0.8.2"]},
+  "meck": {:hex, :meck, "0.8.3"},
   "netlink": {:git, "https://github.com/Feuerlabs/netlink.git", "d6e7188e907015166afba09fbf2f433b9fe08360", [ref: "d6e7188e"]},
   "parse_trans": {:git, "git://github.com/uwiger/parse_trans.git", "82cc00264aa1bad8fc5c0739b7541feb4a843432", [tag: "2.9"]},
   "rabbit_common": {:git, "git://github.com/jbrisbin/rabbit_common.git", "9c1965273032ffb79ec0ff80b250e5d0b4608aa7", [tag: "rabbitmq-3.3.5"]},
