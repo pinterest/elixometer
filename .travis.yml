@@ -4,5 +4,9 @@ elixir:
 otp_release:
   - 18.1
 sudo: false
+install: true
 script:
-  - mix test
+  - mix deps.get && mix test
+cache:
+  directories:
+  - $HOME/.mix/archives
