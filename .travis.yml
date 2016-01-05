@@ -5,6 +5,8 @@ otp_release:
   - 18.1
 sudo: false
 install: true
+before_script:
+  - mix local.hex --force
 script:
   - mix deps.get && mix test
 cache:
