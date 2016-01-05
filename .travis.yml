@@ -10,7 +10,7 @@ before_script:
 script:
   - MIX_ENV=test mix do deps.get, test
 after_script:
-  - MIX_ENV=test mix coveralls.detail
+  - MIX_ENV=test mix coveralls.travis
 cache:
   directories:
   - $HOME/.mix/archives
