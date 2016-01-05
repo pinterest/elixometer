@@ -5,8 +5,12 @@ otp_release:
   - 18.1
 sudo: false
 install: true
+before_script:
+  - mix local.hex --force
 script:
-  - mix deps.get && mix test
+  - MIX_ENV=test mix do deps.get test
+after_script:
+  - MIX_ENV=test mix coveralls.detail
 cache:
   directories:
   - $HOME/.mix/archives

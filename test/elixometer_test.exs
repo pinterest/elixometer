@@ -131,6 +131,27 @@ defmodule ElixometerTest do
     assert val == 0
   end
 
+  test "a counter does not reset itself if reset_seconds is nil" do
+    update_counter("no_reset", 1, reset_seconds: nil)
+
+    expected_name = [:elixometer, :test, :counters, :no_reset]
+    {:ok, [value: val]} = :exometer.get_value(expected_name, :value)
+    assert val == 1
+
+    :timer.sleep(500)
+    {:ok, [value: val]} = :exometer.get_value(expected_name, :value)
+    assert val == 1
+
+    :timer.sleep(800)
+
+    {:ok, [value: val]} = :exometer.get_value(expected_name, :value)
+    assert val == 1
+  end
+
+  test "a counter fails to register if reset_seconds is < 1" do
+    assert_raise FunctionClauseError, fn -> update_counter("will_fail", 1, reset_seconds: 0) end
+  end
+
   test "a timer registers its name" do
     timed("register", do: 1 + 1)
 

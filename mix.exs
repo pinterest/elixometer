@@ -5,7 +5,10 @@ defmodule Elixometer.Mixfile do
     [app: :elixometer,
      version: "1.0.0",
      elixir: "~> 1.0",
-     deps: deps]
+     deps: deps,
+     test_coverage: [tool: ExCoveralls],
+     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test],
+     ]
   end
 
   def application do
@@ -23,13 +26,14 @@ defmodule Elixometer.Mixfile do
     [update_frequency: 1_000]
   end
 
-  defp deps do
+  defp deps 
     [
-        {:meck, github: "eproxus/meck", tag: "0.8.2", override: true},
+        {:meck, github: "eproxus/meck", tag: "0.8.3", override: true, only: :test},
         {:edown, github: "uwiger/edown", tag: "0.7", override: true},
         {:lager, github: "basho/lager", tag: "2.1.0", override: true},
         {:exometer, github: "pspdfkit-labs/exometer"},
         {:netlink, github: "Feuerlabs/netlink", ref: "d6e7188e", override: true},
+        {:excoveralls, github: "parroty/excoveralls", tag: "v0.4.3", override: true, only: :test}
     ]
   end
 end
