@@ -8,7 +8,7 @@ install: true
 before_script:
   - mix local.hex --force
 script:
-  - MIX_ENV=test mix do deps.get, test
+  - MIX_ENV=test mix do deps.get, test --trace
 after_script:
   - MIX_ENV=test mix coveralls.travis
 cache:
