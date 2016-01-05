@@ -285,7 +285,7 @@ defmodule Elixometer do
   If the value of the `:reset_seconds` option is greater than zero, the counter will be reset
   automatically at the specified interval.
   """
-  def update_counter(name, delta, opts = [reset_seconds: secs] \\ [reset_seconds: nil]) when is_bitstring(name) and (is_nil(secs) or secs >= 1) do
+  def update_counter(name, delta, [reset_seconds: secs] \\ [reset_seconds: nil]) when is_bitstring(name) and (is_nil(secs) or secs >= 1) do
     monitor = name_to_exometer(:counters, name)
 
     register_metric_once(monitor) do
