@@ -8,7 +8,7 @@ install: true
 before_script:
   - mix local.hex --force
 script:
-  - mix deps.get && mix test
+  - mix deps.get && mix test --trace
 cache:
   directories:
   - $HOME/.mix/archives
