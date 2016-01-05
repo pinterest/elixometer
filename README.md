@@ -1,7 +1,7 @@
 Elixometer
 ==========
 
-[![Build Status](https://travis-ci.org/pinterest/elixometer.svg?branch=master)](https://travis-ci.org/pinterest/elixometer)
+[![Build Status](https://travis-ci.org/pinterest/elixometer.svg?branch=master)](https://travis-ci.org/pinterest/elixometer) [![Coverage Status](https://coveralls.io/repos/pinterest/elixometer/badge.svg?branch=master)](https://coveralls.io/r/pinterest/elixometer?branch=master)
 
 A light wrapper around exometer.
 
