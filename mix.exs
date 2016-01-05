@@ -25,7 +25,7 @@ defmodule Elixometer.Mixfile do
 
   defp deps do
     [
-        {:meck, github: "eproxus/meck", tag: "0.8.2", override: true},
+        {:meck, "~> 0.8.3"},
         {:edown, github: "uwiger/edown", tag: "0.7", override: true},
         {:lager, github: "basho/lager", tag: "2.1.0", override: true},
         {:exometer, github: "pspdfkit-labs/exometer"},

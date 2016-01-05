@@ -281,13 +281,21 @@ defmodule Elixometer do
   @doc """
   Updates a counter metric. If the metric doesn't exist, the metric is created
   and the metric is subscribed to the default reporter.
+
+  If the value of the `:reset_seconds` option is greater than zero, the counter will be reset
+  automatically at the specified interval.
   """
-  def update_counter(name, delta, opts \\ [reset_seconds: 60]) when is_bitstring(name) do
+  def update_counter(name, delta, opts = [reset_seconds: secs] \\ [reset_seconds: nil]) when is_bitstring(name) and (is_nil(secs) or secs >= 1) do
     monitor = name_to_exometer(:counters, name)
 
     register_metric_once(monitor) do
       :exometer.new(monitor, :counter, [])
-      add_counter(monitor, opts[:reset_seconds] * 1000)
+
+      if is_nil secs do
+        add_counter(monitor, secs)
+      else
+        add_counter(monitor, secs * 1000)
+      end
     end
 
     :exometer.update(monitor, delta)
@@ -410,7 +418,7 @@ defmodule Elixometer do
     Enum.map(config.counters,
       fn({name, millis}) ->
         {:ok, [ms_since_reset: since_reset]} = :exometer.get_value(name, :ms_since_reset)
-        if since_reset >= millis do
+        if millis && since_reset >= millis do
           :exometer.reset(name)
         end
       end)
