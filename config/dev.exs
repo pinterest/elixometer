@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :exometer, report: [reporters: []]
+config :exometer_core, report: [reporters: []]
 
 config :lager, [
   log_root: 'log',

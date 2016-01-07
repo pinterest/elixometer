@@ -17,7 +17,7 @@ defmodule Elixometer.Mixfile do
 
   def application do
      [mod: {Elixometer.App, []},
-      applications: [:logger, :exometer],
+      applications: [:logger, :exometer_core],
       env: default_config(Mix.env)
      ]
   end
@@ -32,11 +32,10 @@ defmodule Elixometer.Mixfile do
 
   defp deps do
     [
-        {:meck, "~> 0.8.3"},
+        {:meck, "~> 0.8.3", only: :test},
         {:edown, github: "uwiger/edown", tag: "0.7", override: true},
         {:lager, github: "basho/lager", tag: "2.1.0", override: true},
-        {:exometer, github: "pspdfkit-labs/exometer"},
-        {:netlink, github: "Feuerlabs/netlink", ref: "d6e7188e", override: true},
+        {:exometer_core, git: "git://github.com/PSPDFKit-labs/exometer_core.git", branch: "master"},
         {:excoveralls, github: "parroty/excoveralls", tag: "v0.4.3", override: true, only: :test}
     ]
   end
