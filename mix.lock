@@ -7,7 +7,7 @@
   "exjsx": {:hex, :exjsx, "3.2.0"},
   "exometer": {:git, "https://github.com/pspdfkit-labs/exometer.git", "fc367682a809ccd463a907e6e00e52d6d354c83f", []},
   "exometer_collectd": {:git, "git://github.com/Feuerlabs/exometer_collectd.git", "e71e8e5f43e04ee3e4727e2a32f4952073a4530e", [tag: "1.0"]},
-  "exometer_core": {:git, "git://github.com/PSPDFKit-labs/exometer_core.git", "ccc18cf0328692756fd9b837a88823cf979da8e1", [branch: "master"]},
+  "exometer_core": {:git, "https://github.com/pspdfkit-labs/exometer_core.git", "ccc18cf0328692756fd9b837a88823cf979da8e1", []},
   "folsom": {:git, "git://github.com/boundary/folsom", "38e2cce7c64ce1f0a3a918d90394cfc0a940b1ba", [tag: "0.8.2"]},
   "goldrush": {:git, "git://github.com/DeadZen/goldrush.git", "71e63212f12c25827e0c1b4198d37d5d018a7fec", [tag: "0.1.6"]},
   "hackney": {:hex, :hackney, "1.4.8"},

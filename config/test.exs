@@ -1,6 +1,6 @@
 use Mix.Config
 
-config(:exometer, report: [reporters: [{Elixometer.TestReporter, []}]])
+config(:exometer_core, report: [reporters: [{Elixometer.TestReporter, []}]])
 
 config(:elixometer, update_frequency: 20,
        reporter: Elixometer.TestReporter,
