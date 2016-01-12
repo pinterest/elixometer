@@ -1,8 +1,12 @@
 Elixometer
 ==========
 
+![Version](https://img.shields.io/github/tag/pinterest/elixometer.svg)
 [![Build Status](https://travis-ci.org/pinterest/elixometer.svg?branch=master)](https://travis-ci.org/pinterest/elixometer)
 [![Coverage Status](https://coveralls.io/repos/pinterest/elixometer/badge.svg?branch=&service=github)](https://coveralls.io/github/pinterest/elixometer?branch=master)
+![Issues](https://img.shields.io/github/issues/pinterest/elixometer.svg)
+![License](https://img.shields.io/badge/license-Apache%202-blue.svg)
+=======
 
 A light wrapper around exometer.
 
