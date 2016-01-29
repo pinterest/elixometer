@@ -370,13 +370,13 @@ defmodule Elixometer do
 
   def ensure_subscribed(name) do
     if not metric_subscribed?(name) do
-      GenServer.call(Process.whereis(__MODULE__), {:subscribe, name})
+      GenServer.call(__MODULE__, {:subscribe, name})
     end
   end
 
   def ensure_metric_defined(name, defn_fn) do
     if not metric_defined?(name) do
-      GenServer.call(Process.whereis(__MODULE__), {:define_metric, name, defn_fn})
+      GenServer.call(__MODULE__, {:define_metric, name, defn_fn})
     end
 
     :ok
@@ -440,7 +440,7 @@ defmodule Elixometer do
 
   def subscribe(monitor) do
     if not metric_subscribed?(monitor) do
-      GenServer.call(Process.whereis(__MODULE__), {:subscribe, monitor})
+      GenServer.call(__MODULE__, {:subscribe, monitor})
     end
   end
 
