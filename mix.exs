@@ -36,7 +36,7 @@ defmodule Elixometer.Mixfile do
         {:edown, github: "uwiger/edown", tag: "0.7", override: true},
         {:lager, github: "basho/lager", tag: "2.1.0", override: true},
         {:exometer_core, git: "git://github.com/PSPDFKit-labs/exometer_core.git", branch: "master"},
-        {:excoveralls, github: "parroty/excoveralls", tag: "v0.4.3", override: true, only: :test}
+        {:excoveralls, github: "parroty/excoveralls", tag: "v0.4.5", override: true, only: :test}
     ]
   end
 
