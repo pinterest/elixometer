@@ -114,7 +114,7 @@ defmodule Elixometer do
   use GenServer
 
   defmodule Config do
-    defstruct table_name: nil, counters: HashDict.new
+    defstruct table_name: nil, counters: Map.new
   end
 
   defmodule Timer do
@@ -410,7 +410,7 @@ defmodule Elixometer do
   end
 
   def handle_cast({:add_counter, metric_name, ttl_millis}, config) do
-    new_counters = Dict.put(config.counters, metric_name, ttl_millis)
+    new_counters = Map.put(config.counters, metric_name, ttl_millis)
     {:noreply, %Config{config | counters: new_counters}}
   end
 
