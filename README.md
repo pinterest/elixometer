@@ -28,7 +28,7 @@ In one of your config files, set up an exometer reporter, and then register
 it to elixometer like this:
 
 ```elixir
-       config(:exometer, report: [reporters: [{:exometer_report_tty, []}]])
+       config(:exometer_core, report: [reporters: [{:exometer_report_tty, []}]])
        config(:elixometer, reporter: :exometer_report_tty,
        	    env: Mix.env,
        	    metric_prefix: "myapp")
