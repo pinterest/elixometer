@@ -11,7 +11,10 @@ defmodule Elixometer.Mixfile do
      package: package,
      deps: deps,
      test_coverage: [tool: ExCoveralls],
-     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test],
+     preferred_cli_env: ["coveralls": :test,
+                         "coveralls.detail": :test,
+                         "coveralls.post": :test],
+     elixirc_paths: elixirc_paths(Mix.env),
      ]
   end
 
@@ -61,4 +64,13 @@ to   the configured reporter.
       links: %{"GitHub" => project_url}
      ]
   end
+
+  defp elixirc_paths(:test) do
+    ["lib", "test/support"]
+  end
+
+  defp elixirc_paths(_) do
+    ["lib"]
+  end
+
 end
