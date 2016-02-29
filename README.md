@@ -78,3 +78,24 @@ Updating a metric is similarly easy:
         end
       end
 ```
+
+## Additional Reporters
+
+By default, Elixometer only includes the `exometer_core` package. However, some reporters (namely OpenTSDB and Statsd) are only available by installing `exometer`. This is fairly easy to do, all you need to do is update your `mix.exs` to include exometer as a dependency and start it as an application. For example:
+
+```elixir
+  def application do
+     [
+      applications: [:exometer,
+      ... other applications go here
+      ],
+      ...
+     ]
+  end
+
+  defp deps do
+    [
+        {:exometer, github: "PSPDFKit-labs/exometer_core"}
+    ]
+  end
+```
