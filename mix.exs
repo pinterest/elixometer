@@ -3,8 +3,8 @@ defmodule Elixometer.Mixfile do
 
   def project do
     [app: :elixometer,
-     version: "1.0.0",
-     elixir: "~> 1.0",
+     version: "1.1.0",
+     elixir: ">= 1.0.0",
      description: description,
      source_url: project_url,
      homepage_url: project_url,
