@@ -3,12 +3,14 @@ defmodule Elixometer.Updater do
   A capped worker that updates metrics.
   """
 
-  import Elixometer, only: [ensure_registered: 2, add_counter: 2]
+  @max_messages 1000
+
+  import Elixometer, only: [ensure_registered: 2, add_counter: 2, add_counter: 1]
   import Elixometer.Utils
   use GenServer
 
   def init([]) do
-    {:ok, pobox} = :pobox.start_link(self, 1000, :queue)
+    {:ok, pobox} = :pobox.start_link(self, @max_messages, :queue)
     Process.register(pobox, :elixometer_pobox)
     activate_pobox
     {:ok, nil}
@@ -24,7 +26,7 @@ defmodule Elixometer.Updater do
   end
 
   def timer(name, units, elapsed) when is_list(name) do
-  :pobox.post(:elixometer_pobox, {:timer, name, units, elapsed})
+    :pobox.post(:elixometer_pobox, {:timer, name, units, elapsed})
   end
 
   def gauge(name, value) do
@@ -78,7 +80,7 @@ defmodule Elixometer.Updater do
       :exometer.new(monitor, :counter, [])
 
       if is_nil reset_seconds do
-        add_counter(monitor, reset_seconds)
+        add_counter(monitor)
       else
         add_counter(monitor, reset_seconds * 1000)
       end

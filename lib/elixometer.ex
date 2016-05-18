@@ -252,6 +252,10 @@ defmodule Elixometer do
     GenServer.cast(__MODULE__, {:add_counter, metric_name, ttl_millis})
   end
 
+  def add_counter(metric_name) do
+    GenServer.cast(__MODULE__, {:add_counter, metric_name, nil})
+  end
+
   def metric_defined?(name) when is_bitstring(name) do
     name |> to_atom_list |> metric_defined?
   end
@@ -278,26 +282,40 @@ defmodule Elixometer do
     :ok
   end
 
-  def ensure_registered(name, register_fn) do
+  @doc """
+  Ensures a metric is correctly registered in Elixometer.
+  This means that Elixometer knows about it and its metrics are
+  subscribed to an exometer reporter
+  """
+  def ensure_registered(metric_name, register_fn) do
     try do
-      ensure_metric_defined(name, register_fn)
-      subscribe(name)
+      ensure_metric_defined(metric_name, register_fn)
+      subscribe(metric_name)
     rescue
       e in ErlangError -> e
     end
   end
 
-  def handle_call({:subscribe, name}, _caller, state) do
-    subscribe_to(name)
+  @doc """
+  Ensures that a metric is subscribed to an exometer reporter.
+  """
+  def subscribe(metric_name) do
+    if not metric_subscribed?(metric_name) do
+      GenServer.call(__MODULE__, {:subscribe, metric_name})
+    end
+  end
+
+  def handle_call({:subscribe, metric_name}, _caller, state) do
+    create_subscription(metric_name)
     {:reply, :ok, state}
   end
 
-  def handle_call({:define_metric, name, defn_fn}, _caller, state) do
+  def handle_call({:define_metric, metric_name, defn_fn}, _caller, state) do
     # we re-check whether the metric is defined here to prevent
     # a race condition in ensure_metric_defined
-    if not metric_defined?(name) do
+    if not metric_defined?(metric_name) do
       defn_fn.()
-      :ets.insert(@elixometer_table, {{:definitions, name}, true})
+      :ets.insert(@elixometer_table, {{:definitions, metric_name}, true})
     end
 
     {:reply, :ok, state}
@@ -320,24 +338,20 @@ defmodule Elixometer do
     {:noreply, config}
   end
 
-  def subscribe(monitor) do
-    if not metric_subscribed?(monitor) do
-      GenServer.call(__MODULE__, {:subscribe, monitor})
-    end
-  end
-
-  defp subscribe_to(name) do
-    if not metric_subscribed?(name) do
+  defp create_subscription(metric_name) do
+    # If a metric isn't subscribed to our reporters, create a subscription in our
+    # ets table and subscribe our metric to exometer's reporters.
+    if not metric_subscribed?(metric_name) do
       cfg = Application.get_all_env(:elixometer)
       reporter = cfg[:reporter]
       interval = cfg[:update_frequency]
 
       if reporter do
-        :exometer.info(name)
+        :exometer.info(metric_name)
         |> Keyword.get(:datapoints)
-        |> Enum.map(&(:exometer_report.subscribe(reporter, name, &1, interval)))
+        |> Enum.map(&(:exometer_report.subscribe(reporter, metric_name, &1, interval)))
       end
-      :ets.insert(@elixometer_table, {{:subscriptions, name}, true})
+      :ets.insert(@elixometer_table, {{:subscriptions, metric_name}, true})
     end
   end
 
