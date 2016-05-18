@@ -56,6 +56,10 @@ defmodule ElixometerTest do
     :ok
   end
 
+  defp wait_for_messages do
+    :timer.sleep 10
+  end
+
   defp to_elixometer_name(metric_name) when is_bitstring(metric_name) do
     metric_name
     |> String.split(".")
@@ -67,6 +71,7 @@ defmodule ElixometerTest do
   end
 
   def metric_exists(metric_name) when is_list(metric_name) do
+    wait_for_messages
     metric_name in Reporter.metric_names
   end
 
@@ -75,6 +80,7 @@ defmodule ElixometerTest do
   end
 
   def subscription_exists(metric_name) when is_list(metric_name) do
+    wait_for_messages
     metric_name in Reporter.subscriptions
   end
 
@@ -117,6 +123,8 @@ defmodule ElixometerTest do
   test "a counter resets itself after its time has elapsed" do
     update_counter("reset", 1, reset_seconds: 1)
 
+    wait_for_messages
+
     expected_name = [:elixometer, :test, :counters, :reset]
     {:ok, [value: val]} = :exometer.get_value(expected_name, :value)
     assert val == 1
@@ -133,6 +141,8 @@ defmodule ElixometerTest do
 
   test "a counter does not reset itself if reset_seconds is nil" do
     update_counter("no_reset", 1, reset_seconds: nil)
+
+    wait_for_messages
 
     expected_name = [:elixometer, :test, :counters, :no_reset]
     {:ok, [value: val]} = :exometer.get_value(expected_name, :value)
@@ -234,6 +244,9 @@ defmodule ElixometerTest do
 
   test "getting a specific metric" do
     update_gauge "value_2", 23
+
+    wait_for_messages
+
     assert {:ok, 23} == get_metric_value("elixometer.test.gauges.value_2", :value)
   end
 
@@ -243,6 +256,9 @@ defmodule ElixometerTest do
 
   test "getting a datapoint that doesn't exist" do
     update_gauge "no_datapoint", 22
+
+    wait_for_messages
+
     assert {:ok, :undefined} == get_metric_value("elixometer.test.gauges.no_datapoint", :bad_datapoint)
 
   end

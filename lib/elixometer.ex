@@ -60,9 +60,6 @@ defmodule Elixometer do
     end
   end
 
-  @elixometer_table :elixometer
-  use GenServer
-
   defmodule Config do
     defstruct table_name: nil, counters: Map.new
   end
@@ -70,6 +67,12 @@ defmodule Elixometer do
   defmodule Timer do
     defstruct method_name: nil, key: nil, units: :micros, args: nil, guards: nil, body: nil
   end
+
+  @elixometer_table :elixometer
+  alias Elixometer.Updater
+  import Elixometer.Utils
+  use GenServer
+
 
   defmacro __using__(_mod) do
 
@@ -156,6 +159,7 @@ defmodule Elixometer do
   def init(:ok) do
     table_name = :ets.new(@elixometer_table, [:set, :named_table, read_concurrency: true])
     :timer.send_interval(250, :tick)
+
     {:ok, %Config{table_name: table_name}}
   end
 
@@ -181,37 +185,11 @@ defmodule Elixometer do
   end
 
   @doc """
-  Register a metric.
-  If the metric name does not exist, then the block of code passed in is executed
-  and the metric is defined and subscribed to.
-  """
-  defmacro register_metric_once(name, do: block) do
-    quote do
-      try do
-        ensure_metric_defined(unquote(name),
-          fn() ->
-            unquote(block)
-          end)
-        subscribe(unquote(name))
-
-      rescue
-        e in ErlangError -> e
-      end
-    end
-  end
-
-  @doc """
   Updates a histogram with a new value. If the metric doesn't exist, a new metric
   is created and subscribed to.
   """
   def update_histogram(name, delta, aggregate_seconds\\60) when is_bitstring(name) do
-    monitor = name_to_exometer(:histograms, name)
-
-    register_metric_once(monitor) do
-      :exometer.new(monitor, :histogram, [time_span: :timer.seconds(aggregate_seconds)])
-    end
-
-    :exometer.update(monitor, delta)
+    Updater.histogram(name, delta, aggregate_seconds)
   end
 
   @doc """
@@ -220,12 +198,7 @@ defmodule Elixometer do
   maintaining QPS stats.
   """
   def update_spiral(name, delta, opts \\ [time_span: :timer.seconds(60), slot_period: 1000]) do
-    monitor = name_to_exometer(:spirals, name)
-    register_metric_once(monitor) do
-      :exometer.new(monitor, :spiral,  opts)
-    end
-
-    :exometer.update(monitor, delta)
+    Updater.spiral(name, delta, opts)
   end
 
   @doc """
@@ -236,19 +209,7 @@ defmodule Elixometer do
   automatically at the specified interval.
   """
   def update_counter(name, delta, [reset_seconds: secs] \\ [reset_seconds: nil]) when is_bitstring(name) and (is_nil(secs) or secs >= 1) do
-    monitor = name_to_exometer(:counters, name)
-
-    register_metric_once(monitor) do
-      :exometer.new(monitor, :counter, [])
-
-      if is_nil secs do
-        add_counter(monitor, secs)
-      else
-        add_counter(monitor, secs * 1000)
-      end
-    end
-
-    :exometer.update(monitor, delta)
+    Updater.counter(name, delta, secs)
   end
 
   @doc """
@@ -267,13 +228,7 @@ defmodule Elixometer do
   and the metric is subscribed to the default reporter.
   """
   def update_gauge(name, value) when is_bitstring(name) do
-    monitor = name_to_exometer(:gauges, name)
-
-    register_metric_once(monitor) do
-      :exometer.new(monitor, :gauge, [])
-    end
-
-    :exometer.update(monitor, value)
+    Updater.gauge(name, value)
   end
 
   @doc """
@@ -284,26 +239,21 @@ defmodule Elixometer do
   :millis and the value will be converted.
   """
   defmacro timed(name, units \\ :micros, do: block) do
+    converted_name = Elixometer.Utils.name_to_exometer(:timers, name)
+
     quote do
-      monitor_name = name_to_exometer(:timers, unquote(name))
-
-      register_metric_once(monitor_name) do
-        :exometer.new(monitor_name, :histogram, [])
-      end
-
       {elapsed_us, rv} = :timer.tc(fn -> unquote(block) end)
-      elapsed_time = case unquote(units) do
-                       :micros -> elapsed_us
-                       :millis -> elapsed_us / 1000
-                     end
-
-      :exometer.update(monitor_name, elapsed_time)
+      Updater.timer(unquote(converted_name), unquote(units), elapsed_us)
       rv
     end
   end
 
-  defp add_counter(metric_name, ttl_millis) do
+  def add_counter(metric_name, ttl_millis) do
     GenServer.cast(__MODULE__, {:add_counter, metric_name, ttl_millis})
+  end
+
+  def add_counter(metric_name) do
+    GenServer.cast(__MODULE__, {:add_counter, metric_name, nil})
   end
 
   def metric_defined?(name) when is_bitstring(name) do
@@ -332,28 +282,40 @@ defmodule Elixometer do
     :ok
   end
 
-  def handle_call({:subscribe, name}, _caller, state) do
-    if not metric_subscribed?(name) do
-      cfg = Application.get_all_env(:elixometer)
-      reporter = cfg[:reporter]
-      interval = cfg[:update_frequency]
-
-      if reporter do
-        :exometer.info(name)
-        |> Keyword.get(:datapoints)
-        |> Enum.map(&(:exometer_report.subscribe(reporter, name, &1, interval)))
-      end
-      :ets.insert(@elixometer_table, {{:subscriptions, name}, true})
+  @doc """
+  Ensures a metric is correctly registered in Elixometer.
+  This means that Elixometer knows about it and its metrics are
+  subscribed to an exometer reporter
+  """
+  def ensure_registered(metric_name, register_fn) do
+    try do
+      ensure_metric_defined(metric_name, register_fn)
+      subscribe(metric_name)
+    rescue
+      e in ErlangError -> e
     end
+  end
+
+  @doc """
+  Ensures that a metric is subscribed to an exometer reporter.
+  """
+  def subscribe(metric_name) do
+    if not metric_subscribed?(metric_name) do
+      GenServer.call(__MODULE__, {:subscribe, metric_name})
+    end
+  end
+
+  def handle_call({:subscribe, metric_name}, _caller, state) do
+    create_subscription(metric_name)
     {:reply, :ok, state}
   end
 
-  def handle_call({:define_metric, name, defn_fn}, _caller, state) do
+  def handle_call({:define_metric, metric_name, defn_fn}, _caller, state) do
     # we re-check whether the metric is defined here to prevent
     # a race condition in ensure_metric_defined
-    if not metric_defined?(name) do
+    if not metric_defined?(metric_name) do
       defn_fn.()
-      :ets.insert(@elixometer_table, {{:definitions, name}, true})
+      :ets.insert(@elixometer_table, {{:definitions, metric_name}, true})
     end
 
     {:reply, :ok, state}
@@ -376,27 +338,21 @@ defmodule Elixometer do
     {:noreply, config}
   end
 
-  def name_to_exometer(metric_type, name) when is_bitstring(name) do
-    config = Application.get_all_env(:elixometer)
-    prefix = config[:metric_prefix] || "elixometer"
-    base_name = case config[:env] do
-                  nil -> "#{prefix}.#{metric_type}.#{name}"
-                  :prod -> "#{prefix}.#{metric_type}.#{name}"
-                  env -> "#{prefix}.#{env}.#{metric_type}.#{name}"
-                end
+  defp create_subscription(metric_name) do
+    # If a metric isn't subscribed to our reporters, create a subscription in our
+    # ets table and subscribe our metric to exometer's reporters.
+    if not metric_subscribed?(metric_name) do
+      cfg = Application.get_all_env(:elixometer)
+      reporter = cfg[:reporter]
+      interval = cfg[:update_frequency]
 
-    to_atom_list(base_name)
-  end
-
-  def subscribe(monitor) do
-    if not metric_subscribed?(monitor) do
-      GenServer.call(__MODULE__, {:subscribe, monitor})
+      if reporter do
+        :exometer.info(metric_name)
+        |> Keyword.get(:datapoints)
+        |> Enum.map(&(:exometer_report.subscribe(reporter, metric_name, &1, interval)))
+      end
+      :ets.insert(@elixometer_table, {{:subscriptions, metric_name}, true})
     end
   end
 
-  defp to_atom_list(s) when is_bitstring(s) do
-    s
-    |> String.split(".")
-    |> Enum.map(&String.to_atom/1)
-  end
 end

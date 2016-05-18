@@ -20,7 +20,7 @@ defmodule Elixometer.Mixfile do
 
   def application do
      [mod: {Elixometer.App, []},
-      applications: [:lager, :exometer_core],
+      applications: [:lager, :exometer_core, :pobox],
       erl_opts: [parse_transform: "lager_transform"],
       env: default_config(Mix.env)
      ]
@@ -40,7 +40,8 @@ defmodule Elixometer.Mixfile do
         {:edown, github: "uwiger/edown", tag: "0.7", override: true},
         {:lager, github: "basho/lager", tag: "2.1.0", override: true},
         {:exometer_core, github: "PSPDFKit-labs/exometer_core"},
-        {:excoveralls, github: "parroty/excoveralls", tag: "v0.4.5", override: true, only: :test}
+        {:excoveralls, github: "parroty/excoveralls", tag: "v0.4.5", override: true, only: :test},
+        {:pobox, github: "ferd/pobox"},
     ]
   end
 

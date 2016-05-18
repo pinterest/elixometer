@@ -11,5 +11,6 @@
   "meck": {:hex, :meck, "0.8.4"},
   "mimerl": {:hex, :mimerl, "1.0.2"},
   "parse_trans": {:git, "git://github.com/uwiger/parse_trans.git", "82cc00264aa1bad8fc5c0739b7541feb4a843432", [tag: "2.9"]},
+  "pobox": {:git, "https://github.com/ferd/pobox.git", "8f9f227e1de2c0342ff1dac01f0219996dc08c4c", []},
   "setup": {:git, "git://github.com/uwiger/setup.git", "51ee7c9f64d2bbe9dcbb58c278e8fbfd4d0ca5e2", [tag: "1.4"]},
   "ssl_verify_hostname": {:hex, :ssl_verify_hostname, "1.0.5"}}
