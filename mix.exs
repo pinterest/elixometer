@@ -37,11 +37,11 @@ defmodule Elixometer.Mixfile do
   defp deps do
     [
         {:meck, "~> 0.8.3", only: :test},
-        {:edown, github: "uwiger/edown", tag: "0.7", override: true},
-        {:lager, github: "basho/lager", tag: "2.1.0", override: true},
-        {:exometer_core, github: "PSPDFKit-labs/exometer_core"},
-        {:excoveralls, github: "parroty/excoveralls", tag: "v0.4.5", override: true, only: :test},
-        {:pobox, github: "ferd/pobox"},
+        {:edown, "~>0.7.0"},
+        {:lager, "~>3.0.2"},
+        {:exometer_core, "~>1.4.0"},
+        {:excoveralls, "~>0.5.4", only: :test},
+        {:pobox, "~>1.0.2"}
     ]
   end
 
@@ -59,7 +59,7 @@ to   the configured reporter.
   end
 
   defp package do
-     [files: ["config", "lib", "mix.exs", "README.md", "LICENSE"],
+     [files: ["config", "lib", "mix.exs", "mix.lock", "README.md", "LICENSE"],
       maintainers: ["Jon Parise", "Steve Cohen"],
       licenses: ["Apache 2.0"],
       links: %{"GitHub" => project_url}
