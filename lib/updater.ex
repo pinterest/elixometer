@@ -20,29 +20,33 @@ defmodule Elixometer.Updater do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  def elixometer_pobox do
+    Process.whereis(:elixometer_pobox)
+  end
+
   def timer(name, units, elapsed) when is_bitstring(name) do
     elixometer_name = name_to_exometer(:timers, name)
     timer(elixometer_name, units, elapsed)
   end
 
   def timer(name, units, elapsed) when is_list(name) do
-    :pobox.post(:elixometer_pobox, {:timer, name, units, elapsed})
+    :pobox.post(elixometer_pobox, {:timer, name, units, elapsed})
   end
 
   def gauge(name, value) do
-    :pobox.post(:elixometer_pobox, {:gauge, name, value})
+    :pobox.post(elixometer_pobox, {:gauge, name, value})
   end
 
   def counter(name, delta, reset_seconds) do
-    :pobox.post(:elixometer_pobox, {:counter, name, delta, reset_seconds})
+    :pobox.post(elixometer_pobox, {:counter, name, delta, reset_seconds})
   end
 
   def spiral(name, delta, opts) do
-    :pobox.post(:elixometer_pobox, {:spiral, name, delta, opts})
+    :pobox.post(elixometer_pobox, {:spiral, name, delta, opts})
   end
 
   def histogram(name, delta, reset_seconds) do
-    :pobox.post(:elixometer_pobox, {:histogram, name, delta, reset_seconds})
+    :pobox.post(elixometer_pobox, {:histogram, name, delta, reset_seconds})
   end
 
   def handle_info({:mail, _pid, messages, _, _}, state) do
@@ -113,6 +117,6 @@ defmodule Elixometer.Updater do
   end
 
   defp activate_pobox do
-    :pobox.active(:elixometer_pobox, fn(msg, _) -> {{:ok, msg}, :nostate} end, :nostate)
+    :pobox.active(elixometer_pobox, fn(msg, _) -> {{:ok, msg}, :nostate} end, :nostate)
   end
 end
