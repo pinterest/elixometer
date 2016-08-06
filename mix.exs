@@ -20,7 +20,7 @@ defmodule Elixometer.Mixfile do
 
   def application do
      [mod: {Elixometer.App, []},
-      applications: [:lager, :exometer_core, :pobox],
+      applications: [:exometer_core, :pobox],
       erl_opts: [parse_transform: "lager_transform"],
       env: default_config(Mix.env)
      ]
@@ -36,10 +36,9 @@ defmodule Elixometer.Mixfile do
 
   defp deps do
     [
-        {:meck, "~> 0.8.3", only: :test},
-        {:edown, "~>0.7.0"},
-        {:lager, "~>3.0.2"},
-        {:exometer_core, "~>1.4.0"},
+        {:meck, "~> 0.8.3", override: true},
+        {:edown, "~>0.7.0", override: true},
+        {:exometer_core, github: "Feuerlabs/exometer_core"},
         {:excoveralls, "~>0.5.4", only: :test},
         {:pobox, "~>1.0.2"}
     ]
