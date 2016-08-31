@@ -6,6 +6,7 @@ otp_release:
 sudo: false
 install: true
 before_script:
+  - mix local.rebar --force
   - mix local.hex --force
 script:
   - MIX_ENV=test mix do deps.get, test --trace
