@@ -36,9 +36,7 @@ defmodule Elixometer.Mixfile do
 
   defp deps do
     [
-        {:meck, "~> 0.8.3", only: :test},
-        {:edown, "~>0.7.0"},
-        {:lager, "~>3.0.2"},
+        {:lager, "~>3.2.0", override: true},
         {:exometer_core, "~>1.4.0"},
         {:excoveralls, "~>0.5.4", only: :test},
         {:pobox, "~>1.0.2"}
