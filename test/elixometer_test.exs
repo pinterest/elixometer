@@ -57,7 +57,7 @@ defmodule ElixometerTest do
   end
 
   defp wait_for_messages do
-    :timer.sleep 10
+    :timer.sleep 50
   end
 
   defp to_elixometer_name(metric_name) when is_bitstring(metric_name) do
