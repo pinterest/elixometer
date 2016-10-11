@@ -41,8 +41,8 @@ defmodule Elixometer.Updater do
     :pobox.post(:elixometer_pobox, {:spiral, name, delta, opts})
   end
 
-  def histogram(name, delta, reset_seconds) do
-    :pobox.post(:elixometer_pobox, {:histogram, name, delta, reset_seconds})
+  def histogram(name, delta, reset_seconds, truncate) do
+    :pobox.post(:elixometer_pobox, {:histogram, name, delta, reset_seconds, truncate})
   end
 
   def handle_info({:mail, _pid, messages, _, _}, state) do
@@ -54,11 +54,11 @@ defmodule Elixometer.Updater do
     {:noreply, state}
   end
 
-  def do_update({:histogram, name, delta, aggregate_seconds}) do
+  def do_update({:histogram, name, delta, aggregate_seconds, truncate}) do
     monitor = name_to_exometer(:histograms, name)
 
     ensure_registered(monitor, fn ->
-      :exometer.new(monitor, :histogram, [time_span: :timer.seconds(aggregate_seconds), truncate: false])
+      :exometer.new(monitor, :histogram, [time_span: :timer.seconds(aggregate_seconds), truncate: truncate])
     end)
 
     :exometer.update(monitor, delta)
