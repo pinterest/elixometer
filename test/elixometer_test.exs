@@ -108,6 +108,20 @@ defmodule ElixometerTest do
     assert subscription_exists "elixometer.test.histograms.subscription"
   end
 
+  test "a histogram does not truncate percentiles" do
+    update_histogram("sensor_reading", 1.13, 1, false)
+    :timer.sleep(1000)
+    {:ok, not_trunc} = get_metric_value("elixometer.test.histograms.sensor_reading", :"99")
+    assert not_trunc == 0.0
+  end
+
+  test "a histogram does truncate percentiles" do
+    update_histogram("sensor_reading_truncated", 1.13, 1)
+    :timer.sleep(1000)
+    {:ok, trunc} = get_metric_value("elixometer.test.histograms.sensor_reading_truncated", :"99")
+    assert trunc == 0
+  end
+
   test "a counter registers its name" do
     update_counter("register", 1)
 

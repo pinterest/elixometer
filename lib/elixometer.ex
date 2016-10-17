@@ -188,8 +188,8 @@ defmodule Elixometer do
   Updates a histogram with a new value. If the metric doesn't exist, a new metric
   is created and subscribed to.
   """
-  def update_histogram(name, delta, aggregate_seconds\\60) when is_bitstring(name) do
-    Updater.histogram(name, delta, aggregate_seconds)
+  def update_histogram(name, delta, aggregate_seconds\\60, truncate\\true) when is_bitstring(name) do
+    Updater.histogram(name, delta, aggregate_seconds, truncate)
   end
 
   @doc """
