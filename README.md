@@ -105,5 +105,5 @@ In case a reporter allows for extra configuration options on subscribe, you can 
 ```elixir
        config(:elixometer,
        	    ...
-       	    extra: [{:tag, :value1}])
+       	    subscribe_options: [{:tag, :value1}])
 ```
