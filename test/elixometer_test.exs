@@ -281,4 +281,12 @@ defmodule ElixometerTest do
     assert {:error, :not_found} == get_metric_value("elixometer.test.bad.bad")
   end
 
+  test "a subscription that has additional subscription options" do
+    Application.put_env(:elixometer, :subscribe_options, [some_option: 42])
+
+    update_counter("subscribe_options", 1)
+
+    assert subscription_exists "elixometer.test.counters.subscribe_options"
+    assert [some_option: 42] = Reporter.options_for("elixometer.test.counters.subscribe_options")
+  end
 end

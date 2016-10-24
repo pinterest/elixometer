@@ -99,3 +99,11 @@ By default, Elixometer only includes the `exometer_core` package. However, some 
     ]
   end
 ```
+
+In case a reporter allows for extra configuration options on subscribe, you can configure them in your `elixometer` config like so:
+
+```elixir
+       config(:elixometer,
+       	    ...
+       	    subscribe_options: [{:tag, :value1}])
+```

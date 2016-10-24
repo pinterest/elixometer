@@ -35,13 +35,38 @@ defmodule Elixometer.TestReporter do
 
   def value_for(metric_name, datapoint) when is_bitstring(metric_name) do
     metric_name
-    |> String.split(".")
-    |> Enum.map(&String.to_atom/1)
+    |> to_elixometer_name
     |> value_for(datapoint)
   end
 
   def value_for(metric_name, datapoint) do
     {:ok, value} = :exometer.get_value(metric_name, datapoint)
     value
+  end
+
+  def options_for(metric_name) when is_bitstring(metric_name) do
+    metric_name
+    |> to_elixometer_name
+    |> options_for
+  end
+
+  def options_for(metric_name) do
+    Application.get_env(:elixometer, :reporter)
+    |> :exometer_report.list_subscriptions
+    |> Enum.filter_map(
+      fn {name, _, _, _}  -> name == metric_name end,
+      fn {_, _, _, extra} -> extra end)
+    |> case do
+      [hd | _] -> hd
+      _        -> nil
+    end
+  end
+
+  # Helpers
+
+  defp to_elixometer_name(metric_name) do
+    metric_name
+    |> String.split(".")
+    |> Enum.map(&String.to_atom/1)
   end
 end

@@ -345,11 +345,12 @@ defmodule Elixometer do
       cfg = Application.get_all_env(:elixometer)
       reporter = cfg[:reporter]
       interval = cfg[:update_frequency]
+      subscribe_options = cfg[:subscribe_options] || true
 
       if reporter do
         :exometer.info(metric_name)
         |> Keyword.get(:datapoints)
-        |> Enum.map(&(:exometer_report.subscribe(reporter, metric_name, &1, interval)))
+        |> Enum.map(&(:exometer_report.subscribe(reporter, metric_name, &1, interval, subscribe_options)))
       end
       :ets.insert(@elixometer_table, {{:subscriptions, metric_name}, true})
     end
