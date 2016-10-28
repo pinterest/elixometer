@@ -345,7 +345,7 @@ defmodule Elixometer do
       cfg = Application.get_all_env(:elixometer)
       reporter = cfg[:reporter]
       interval = cfg[:update_frequency]
-      subscribe_options = cfg[:subscribe_options] || true
+      subscribe_options = cfg[:subscribe_options] || []
 
       if reporter do
         :exometer.info(metric_name)
