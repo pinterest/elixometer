@@ -348,8 +348,7 @@ defmodule Elixometer do
       subscribe_options = cfg[:subscribe_options] || []
 
       if reporter do
-        :exometer.info(metric_name)
-        |> Keyword.get(:datapoints)
+        :exometer.info(metric_name, :datapoints)
         |> Enum.map(&(:exometer_report.subscribe(reporter, metric_name, &1, interval, subscribe_options)))
       end
       :ets.insert(@elixometer_table, {{:subscriptions, metric_name}, true})
