@@ -250,6 +250,14 @@ defmodule ElixometerTest do
     assert subscription_exists "elixometer.test.spirals.subscription"
   end
 
+  test "name can be precomputed" do
+    name = Elixometer.Utils.name_to_exometer(:spirals, "precomputed_counter")
+    update_spiral(name, 123)
+    wait_for_messages
+
+    assert get_metric_value("elixometer.test.spirals.precomputed_counter", :one) == {:ok, 123}
+  end
+
   test "getting a value with no arguments" do
     update_gauge "value", 100
 
