@@ -5,7 +5,10 @@ matrix:
   include:
     - elixir: 1.4.0
       otp_release: 19.2
-sudo: false
+install:
+  - mix local.rebar --force
+  - mix local.hex --force
+  - mix deps.get
 after_script:
   - MIX_ENV=test mix coveralls.travis
 cache:
