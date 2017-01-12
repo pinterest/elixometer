@@ -5,11 +5,11 @@ defmodule Elixometer.Mixfile do
     [app: :elixometer,
      version: "1.2.1",
      elixir: ">= 1.0.0",
-     description: description,
-     source_url: project_url,
-     homepage_url: project_url,
-     package: package,
-     deps: deps,
+     description: description(),
+     source_url: project_url(),
+     homepage_url: project_url(),
+     package: package(),
+     deps: deps(),
      test_coverage: [tool: ExCoveralls],
      preferred_cli_env: ["coveralls": :test,
                          "coveralls.detail": :test,
@@ -62,7 +62,7 @@ to   the configured reporter.
      [files: ["config", "lib", "mix.exs", "mix.lock", "README.md", "LICENSE"],
       maintainers: ["Jon Parise", "Steve Cohen"],
       licenses: ["Apache 2.0"],
-      links: %{"GitHub" => project_url}
+      links: %{"GitHub" => project_url()}
      ]
   end
 
