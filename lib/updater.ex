@@ -1,7 +1,5 @@
 defmodule Elixometer.Updater do
-  @moduledoc """
-  A capped worker that updates metrics.
-  """
+  @moduledoc false
 
   @max_messages 1000
 

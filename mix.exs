@@ -23,7 +23,13 @@ defmodule Elixometer.Mixfile do
                          "coveralls.html": :test,
                          "coveralls.post": :test],
      elixirc_paths: elixirc_paths(Mix.env),
-     ]
+
+     # Docs
+     name: "Elixometer",
+     docs: [
+       main: "Elixometer",
+       source_url: @project_url
+     ]]
   end
 
   def application do
@@ -49,6 +55,7 @@ defmodule Elixometer.Mixfile do
       {:lager, ">= 3.2.1", override: true},
       {:exometer_core, "~>1.4.0"},
       {:credo, "~> 0.5", only: [:dev, :test]},
+      {:ex_doc, "~> 0.14", only: :dev},
       {:excoveralls, "~> 0.6", only: [:dev, :test]},
       {:pobox, "~>1.0.2"}
     ]
