@@ -1,4 +1,6 @@
 defmodule Elixometer.TestReporter do
+  @moduledoc false
+
   # exometer callbacks
   def exometer_init(_opts) do
     {:ok, nil}

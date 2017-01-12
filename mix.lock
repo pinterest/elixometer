@@ -1,5 +1,7 @@
 %{"bear": {:hex, :bear, "0.8.3", "866002127a97932720a0d475d8582c98ec5fb78db3a18dfe7eaf91594d9024b8", [:rebar3], []},
+  "bunt": {:hex, :bunt, "0.1.6", "5d95a6882f73f3b9969fdfd1953798046664e6f77ec4e486e6fafc7caad97c6f", [:mix], []},
   "certifi": {:hex, :certifi, "0.7.0", "861a57f3808f7eb0c2d1802afeaae0fa5de813b0df0979153cbafcd853ababaf", [:rebar3], []},
+  "credo": {:hex, :credo, "0.5.3", "0c405b36e7651245a8ed63c09e2d52c2e2b89b6d02b1570c4d611e0fcbecf4a2", [:mix], [{:bunt, "~> 0.1.6", [hex: :bunt, optional: false]}]},
   "edown": {:hex, :edown, "0.7.0", "6803599606b10f8e328d6d60c44cd16244cd2429908894c415fce4211c3bfefd", [:make, :rebar], []},
   "excoveralls": {:hex, :excoveralls, "0.6.0", "bd8565173ad1b97c29329dcbabb9effb56a5fcd1a698fd2097108dfe84b4c4ef", [:mix], [{:exjsx, "~> 3.0", [hex: :exjsx, optional: false]}, {:hackney, ">= 0.12.0", [hex: :hackney, optional: false]}]},
   "exjsx": {:hex, :exjsx, "3.2.1", "1bc5bf1e4fd249104178f0885030bcd75a4526f4d2a1e976f4b428d347614f0f", [:mix], [{:jsx, "~> 2.8.0", [hex: :jsx, optional: false]}]},

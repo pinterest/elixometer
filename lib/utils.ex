@@ -1,4 +1,6 @@
 defmodule Elixometer.Utils do
+  @moduledoc false
+
   # Name may already have been converted elsewhere.
   def name_to_exometer(_metric_type, name) when is_list(name) do
     name
