@@ -4,7 +4,7 @@ defmodule Elixometer.Mixfile do
   def project do
     [app: :elixometer,
      version: "1.2.1",
-     elixir: ">= 1.2.0",
+     elixir: ">= 1.3.0",
      description: description(),
      source_url: project_url(),
      homepage_url: project_url(),
