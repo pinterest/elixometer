@@ -53,6 +53,8 @@ defmodule Elixometer do
   """
 
   defmodule App do
+    @moduledoc false
+
     use Application
 
     def start(_type, _args_) do
@@ -61,10 +63,12 @@ defmodule Elixometer do
   end
 
   defmodule Config do
+    @moduledoc false
     defstruct table_name: nil, counters: Map.new
   end
 
   defmodule Timer do
+    @moduledoc false
     defstruct method_name: nil, key: nil, units: :micros, args: nil, guards: nil, body: nil
   end
 
@@ -117,7 +121,7 @@ defmodule Elixometer do
     end
   end
 
-  defp build_timer_body(timer_data=%Timer{}) do
+  defp build_timer_body(%Timer{} = timer_data) do
     quote do
       timed(unquote(timer_data.key), unquote(timer_data.units)) do
         unquote(timer_data.body)
@@ -131,7 +135,7 @@ defmodule Elixometer do
     timed_methods = timers
     |> Enum.reverse
     |> Enum.map(
-        fn(timer_data=%Timer{}) ->
+        fn(%Timer{} = timer_data) ->
           Module.make_overridable(mod,
                                   [{timer_data.method_name, length(timer_data.args)}])
           body = build_timer_body(timer_data)
@@ -188,7 +192,7 @@ defmodule Elixometer do
   Updates a histogram with a new value. If the metric doesn't exist, a new metric
   is created and subscribed to.
   """
-  def update_histogram(name, delta, aggregate_seconds\\60, truncate\\true) when is_bitstring(name) do
+  def update_histogram(name, delta, aggregate_seconds \\ 60, truncate \\ true) when is_bitstring(name) do
     Updater.histogram(name, delta, aggregate_seconds, truncate)
   end
 
@@ -327,7 +331,7 @@ defmodule Elixometer do
   end
 
   def handle_info(:tick, config) do
-    Enum.map(config.counters,
+    Enum.each(config.counters,
       fn({name, millis}) ->
         {:ok, [ms_since_reset: since_reset]} = :exometer.get_value(name, :ms_since_reset)
         if millis && since_reset >= millis do
@@ -348,7 +352,8 @@ defmodule Elixometer do
       subscribe_options = cfg[:subscribe_options] || []
 
       if reporter do
-        :exometer.info(metric_name)
+        metric_name
+        |> :exometer.info
         |> Keyword.get(:datapoints)
         |> Enum.map(&(:exometer_report.subscribe(reporter, metric_name, &1, interval, subscribe_options)))
       end
