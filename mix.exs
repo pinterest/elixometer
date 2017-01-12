@@ -1,18 +1,26 @@
 defmodule Elixometer.Mixfile do
   use Mix.Project
 
+  @description """
+  Elixometer is a light wrapper around exometer that defines and subscribes
+  metrics automatically to the configured reporter.
+  """
+
+  @project_url "https://github.com/pinterest/elixometer"
+
   def project do
     [app: :elixometer,
-     version: "1.2.1",
+     version: "1.3.0-dev",
      elixir: ">= 1.3.0",
-     description: description(),
-     source_url: project_url(),
-     homepage_url: project_url(),
+     description: @description,
+     source_url: @project_url,
+     homepage_url: @project_url,
      package: package(),
      deps: deps(),
      test_coverage: [tool: ExCoveralls],
      preferred_cli_env: ["coveralls": :test,
                          "coveralls.detail": :test,
+                         "coveralls.html": :test,
                          "coveralls.post": :test],
      elixirc_paths: elixirc_paths(Mix.env),
      ]
@@ -40,29 +48,16 @@ defmodule Elixometer.Mixfile do
       # https://github.com/basho/lager/pull/321
       {:lager, ">= 3.2.1", override: true},
       {:exometer_core, "~>1.4.0"},
-      {:excoveralls, "~>0.5.4", only: :test},
+      {:excoveralls, "~> 0.6", only: [:dev, :test]},
       {:pobox, "~>1.0.2"}
     ]
-  end
-
-  defp description do
-     """
-     Elixometer is a light wrapper around exometer that defines and subscribes metrics automatically
-to   the configured reporter.
-     """
-  end
-
-  defp project_url do
-     """
-     https://github.com/pinterest/elixometer
-     """
   end
 
   defp package do
      [files: ["config", "lib", "mix.exs", "mix.lock", "README.md", "LICENSE"],
       maintainers: ["Jon Parise", "Steve Cohen"],
       licenses: ["Apache 2.0"],
-      links: %{"GitHub" => project_url()}
+      links: %{"GitHub" => @project_url}
      ]
   end
 
