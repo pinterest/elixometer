@@ -10,9 +10,9 @@ defmodule Elixometer.Updater do
   use GenServer
 
   def init([]) do
-    {:ok, pobox} = :pobox.start_link(self, @max_messages, :queue)
+    {:ok, pobox} = :pobox.start_link(self(), @max_messages, :queue)
     Process.register(pobox, :elixometer_pobox)
-    activate_pobox
+    activate_pobox()
     {:ok, nil}
   end
 
@@ -49,7 +49,7 @@ defmodule Elixometer.Updater do
     messages
     |> Enum.each(&do_update/1)
 
-    activate_pobox
+    activate_pobox()
 
     {:noreply, state}
   end
