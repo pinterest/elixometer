@@ -1,6 +1,6 @@
 defmodule Elixometer do
   @moduledoc ~S"""
-  A light wrapper around exometer.
+  A light wrapper around [exometer_core](https://hex.pm/packages/exometer_core).
 
   Elixometer allows you to define metrics and subscribe them automatically
   to the default reporter for your environment.
@@ -10,6 +10,7 @@ defmodule Elixometer do
   In one of your config files, set up an exometer reporter, and then register
   it to elixometer like this:
 
+       config(:exometer_core, report: [reporters: [{:exometer_report_tty, []}]])
        config(:elixometer, reporter: :exometer_report_tty)
 
   ## Metrics
@@ -198,7 +199,7 @@ defmodule Elixometer do
 
   @doc """
   Updates and alternately creates spiral metric. A spiral metric is a metric maintains a series
-  of internal slots that 'age out' and are replaced by newer values. This is useful for
+  of internal slots that "age out" and are replaced by newer values. This is useful for
   maintaining QPS stats.
   """
   def update_spiral(name, delta, opts \\ [time_span: :timer.seconds(60), slot_period: 1000]) do
@@ -240,7 +241,7 @@ defmodule Elixometer do
   subscribed to the default reporter.
 
   The time units default to *microseconds*, but you can pass in a unit of
-  :millis and the value will be converted.
+  `:millis` and the value will be converted.
   """
   defmacro timed(name, units \\ :micros, do: block) do
     converted_name = Elixometer.Utils.name_to_exometer(:timers, name)
