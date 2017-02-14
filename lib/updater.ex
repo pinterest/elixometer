@@ -102,10 +102,13 @@ defmodule Elixometer.Updater do
       :exometer.new(name, :histogram, [])
     end)
 
-    elapsed_time = case units do
-                     :micros -> elapsed_us
-                     :millis -> elapsed_us / 1000
-                   end
+    elapsed_time =
+      cond do
+        units in [:nanosecond, :nanoseconds] -> elapsed_us * 1000
+        units in [:micros, :microsecond, :microseconds] -> elapsed_us
+        units in [:millis, :millisecond, :milliseconds] -> div(elapsed_us, 1000)
+        units in [:second, :seconds] -> div(elapsed_us, 1_000_000)
+      end
 
     :exometer.update(name, elapsed_time)
   end

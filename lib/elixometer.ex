@@ -70,7 +70,7 @@ defmodule Elixometer do
 
   defmodule Timer do
     @moduledoc false
-    defstruct method_name: nil, key: nil, units: :micros, args: nil, guards: nil, body: nil
+    defstruct method_name: nil, key: nil, units: :microsecond, args: nil, guards: nil, body: nil
   end
 
   @elixometer_table :elixometer
@@ -109,7 +109,7 @@ defmodule Elixometer do
               other -> other
             end
 
-      units = timer_info[:units] || :micros
+      units = timer_info[:units] || :microsecond
       Module.put_attribute(mod, :elixometer_timers,
                            %Timer{method_name: name,
                                   args: args,
@@ -240,10 +240,15 @@ defmodule Elixometer do
   Updates a timer metric. If the metric doesn't exist, it will be created and
   subscribed to the default reporter.
 
-  The time units default to *microseconds*, but you can pass in a unit of
-  `:millis` and the value will be converted.
+  The time units default to *microseconds*, but you can also pass in any of
+  the units in [`System.time_unit.t`](https://hexdocs.pm/elixir/System.html#t:time_unit/0),
+  with the exception of `pos_integer`. This includes `:second`, `:millisecond`,
+  `:microsecond`, and `:nanosecond`.
+
+  Note that nanoseconds are provided for convenience, but Erlang does not
+  actually provide this much granularity.
   """
-  defmacro timed(name, units \\ :micros, do: block) do
+  defmacro timed(name, units \\ :microsecond, do: block) do
     converted_name = Elixometer.Utils.name_to_exometer(:timers, name)
 
     quote do
