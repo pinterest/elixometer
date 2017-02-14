@@ -188,20 +188,36 @@ defmodule ElixometerTest do
     assert subscription_exists "elixometer.test.timers.subscription"
   end
 
-  test "a timer can time in milliseconds" do
-    timed("millis", :millis, do: :timer.sleep(1))
+  test "a timer can time in seconds" do
+    timed("second", :second, do: :timer.sleep(1))
 
-    assert subscription_exists "elixometer.test.timers.millis"
-    [{99, ms}] = Reporter.value_for("elixometer.test.timers.millis", 99)
+    assert subscription_exists "elixometer.test.timers.second"
+    [{99, s}] = Reporter.value_for("elixometer.test.timers.second", 99)
+    assert s <= 1
+  end
+
+  test "a timer can time in milliseconds" do
+    timed("millisecond", :millisecond, do: :timer.sleep(1))
+
+    assert subscription_exists "elixometer.test.timers.millisecond"
+    [{99, ms}] = Reporter.value_for("elixometer.test.timers.millisecond", 99)
     assert ms <= 10
   end
 
   test "a timer times in microseconds by default" do
-    timed("micros", do: :timer.sleep(1))
+    timed("microsecond", do: :timer.sleep(1))
 
-    assert subscription_exists "elixometer.test.timers.micros"
-    [{_data_point, value}] = Reporter.value_for("elixometer.test.timers.micros", 99)
+    assert subscription_exists "elixometer.test.timers.microsecond"
+    [{_data_point, value}] = Reporter.value_for("elixometer.test.timers.microsecond", 99)
     assert value > 1000
+  end
+
+  test "a timer can time in nanoseconds" do
+    timed("nanosecond", :nanosecond, do: :timer.sleep(1))
+
+    assert subscription_exists "elixometer.test.timers.nanosecond"
+    [{99, ns}] = Reporter.value_for("elixometer.test.timers.nanosecond", 99)
+    assert ns > 1_000_000
   end
 
   test "a timer defined in the module's declaration" do
