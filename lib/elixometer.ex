@@ -241,9 +241,8 @@ defmodule Elixometer do
   subscribed to the default reporter.
 
   The time units default to *microseconds*, but you can also pass in any of
-  the units in [`System.time_unit.t`](https://hexdocs.pm/elixir/System.html#t:time_unit/0),
-  with the exception of `pos_integer`. This includes `:second`, `:millisecond`,
-  `:microsecond`, and `:nanosecond`.
+  the units in `t:System.time_unit/0`, with the exception of `pos_integer`.
+  This includes `:second`, `:millisecond`, `:microsecond`, and `:nanosecond`.
 
   Note that nanoseconds are provided for convenience, but Erlang does not
   actually provide this much granularity.
