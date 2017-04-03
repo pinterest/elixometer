@@ -15,13 +15,6 @@ defmodule Elixometer.Utils do
                   env -> "#{prefix}.#{env}.#{metric_type}.#{name}"
                 end
 
-    to_atom_list(base_name)
+    String.split(base_name, ".")
   end
-
-  def to_atom_list(s) when is_bitstring(s) do
-    s
-    |> String.split(".")
-    |> Enum.map(&String.to_atom/1)
-  end
-
 end

@@ -37,7 +37,7 @@ defmodule Elixometer.TestReporter do
 
   def value_for(metric_name, datapoint) when is_bitstring(metric_name) do
     metric_name
-    |> to_elixometer_name
+    |> String.split(".")
     |> value_for(datapoint)
   end
 
@@ -48,7 +48,7 @@ defmodule Elixometer.TestReporter do
 
   def options_for(metric_name) when is_bitstring(metric_name) do
     metric_name
-    |> to_elixometer_name
+    |> String.split(".")
     |> options_for
   end
 
@@ -62,13 +62,5 @@ defmodule Elixometer.TestReporter do
       [hd | _] -> hd
       _        -> nil
     end
-  end
-
-  # Helpers
-
-  defp to_elixometer_name(metric_name) do
-    metric_name
-    |> String.split(".")
-    |> Enum.map(&String.to_atom/1)
   end
 end

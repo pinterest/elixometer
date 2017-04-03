@@ -60,14 +60,8 @@ defmodule ElixometerTest do
     :timer.sleep 50
   end
 
-  defp to_elixometer_name(metric_name) when is_bitstring(metric_name) do
-    metric_name
-    |> String.split(".")
-    |> Enum.map(&String.to_atom/1)
-  end
-
   def metric_exists(metric_name) when is_bitstring(metric_name) do
-    metric_name |> to_elixometer_name |> metric_exists
+    metric_name |> String.split(".") |> metric_exists
   end
 
   def metric_exists(metric_name) when is_list(metric_name) do
@@ -76,7 +70,7 @@ defmodule ElixometerTest do
   end
 
   def subscription_exists(metric_name) when is_bitstring(metric_name) do
-    metric_name |> to_elixometer_name |> subscription_exists
+    metric_name |> String.split(".") |> subscription_exists
   end
 
   def subscription_exists(metric_name) when is_list(metric_name) do
@@ -139,7 +133,7 @@ defmodule ElixometerTest do
 
     wait_for_messages()
 
-    expected_name = [:elixometer, :test, :counters, :reset]
+    expected_name = ["elixometer", "test", "counters", "reset"]
     {:ok, [value: val]} = :exometer.get_value(expected_name, :value)
     assert val == 1
 
@@ -158,7 +152,7 @@ defmodule ElixometerTest do
 
     wait_for_messages()
 
-    expected_name = [:elixometer, :test, :counters, :no_reset]
+    expected_name = ["elixometer", "test", "counters", "no_reset"]
     {:ok, [value: val]} = :exometer.get_value(expected_name, :value)
     assert val == 1
 
