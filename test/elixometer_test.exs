@@ -307,4 +307,13 @@ defmodule ElixometerTest do
     assert subscription_exists "elixometer.test.counters.subscribe_options"
     assert [some_option: 42] = Reporter.options_for("elixometer.test.counters.subscribe_options")
   end
+
+  test "metrics created elsewhere can be retrieved" do
+    foreign_metric = [:created, :somewhere]
+    :exometer.new(foreign_metric, :spiral,  [])
+    :exometer.update(foreign_metric, 100)
+
+    assert {:ok, data} = get_metric_value([:created, :somewhere])
+    assert data[:one] == 100
+  end
 end

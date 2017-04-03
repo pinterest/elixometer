@@ -174,19 +174,25 @@ defmodule Elixometer do
 
   def get_metric_value(metric_name) do
     metric_name
-    |> String.split(".")
+    |> to_exometer_key
     |> :exometer.get_value
   end
 
   def get_metric_value(metric_name, data_point) do
-    metric_val = metric_name
-    |> String.split(".")
-    |> :exometer.get_value(data_point)
+    metric_val =
+      metric_name
+      |> to_exometer_key
+      |> :exometer.get_value(data_point)
 
     case metric_val do
       {:ok, metric} -> {:ok, metric[data_point]}
       r = {:error, _reason} -> r
     end
+  end
+
+  defp to_exometer_key(metric_name) when is_list(metric_name), do: metric_name
+  defp to_exometer_key(metric_name) when is_binary(metric_name) do
+    String.split(metric_name, ".")
   end
 
   @doc """
