@@ -174,19 +174,25 @@ defmodule Elixometer do
 
   def get_metric_value(metric_name) do
     metric_name
-    |> to_atom_list
+    |> to_exometer_key
     |> :exometer.get_value
   end
 
   def get_metric_value(metric_name, data_point) do
-    metric_val = metric_name
-    |> to_atom_list
-    |> :exometer.get_value(data_point)
+    metric_val =
+      metric_name
+      |> to_exometer_key
+      |> :exometer.get_value(data_point)
 
     case metric_val do
       {:ok, metric} -> {:ok, metric[data_point]}
       r = {:error, _reason} -> r
     end
+  end
+
+  defp to_exometer_key(metric_name) when is_list(metric_name), do: metric_name
+  defp to_exometer_key(metric_name) when is_binary(metric_name) do
+    String.split(metric_name, ".")
   end
 
   @doc """
@@ -248,11 +254,9 @@ defmodule Elixometer do
   actually provide this much granularity.
   """
   defmacro timed(name, units \\ :microsecond, do: block) do
-    converted_name = Elixometer.Utils.name_to_exometer(:timers, name)
-
     quote do
       {elapsed_us, rv} = :timer.tc(fn -> unquote(block) end)
-      Updater.timer(unquote(converted_name), unquote(units), elapsed_us)
+      Updater.timer(unquote(name), unquote(units), elapsed_us)
       rv
     end
   end
@@ -266,7 +270,7 @@ defmodule Elixometer do
   end
 
   def metric_defined?(name) when is_bitstring(name) do
-    name |> to_atom_list |> metric_defined?
+    name |> String.split(".") |> metric_defined?
   end
 
   def metric_defined?(name) do

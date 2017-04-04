@@ -33,9 +33,29 @@ Metrics are prepended with the `metric_prefix`, the type of metric and the envir
 
 The optional `update_frequency` key of the :elixometer config controls the interval between reports. By default this is set to `1000` ms in the `dev` environment and `20` ms in the `test` environment.
 
+By default, metrics are formatted using `Elixometer.Utils.name_to_exometer/2`.
+This function takes care of composing metric names with prefix, environment and
+the metric type (e.g. `myapp_prefix.dev.timers.request_time`).
+
+This behaviour can be overridden with a custom formatter function, by adding the
+following configuration entry:
+
+```elixir
+  config :elixometer, Elixometer.Updater,
+    formatter: &MyApp.Metrics.my_custom_formatter/2
+```
+
+Elixometer uses [`pobox`](https://github.com/ferd/pobox) to prevent overload.
+A maximum size of message buffer, defaulting to 1000, can be configured with:
+
+```elixir
+config :elixometer, Elixometer.Updater,
+  max_messages: 5000
+````
+
 ## Metrics
 
-Defining metrics in elixometer is substantially easier than in exometer. Instead of defining and then updating a metric, just update it. Also, instead of providing a list of atoms, a metric is named with a period separated bitstring. Presently, Elixometer supports timers, histograms, gauges, counters, and spirals.
+Defining metrics in elixometer is substantially easier than in exometer. Instead of defining and then updating a metric, just update it. Also, instead of providing a list of terms, a metric is named with a period separated bitstring. Presently, Elixometer supports timers, histograms, gauges, counters, and spirals.
 
 Timings may also be defined by annotating a function with a @timed annotation. This annotation takes a key argument, which tells elixometer what key to use. You  can specify `:auto` and a key will be generated from the module name and method name.
 
