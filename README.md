@@ -115,7 +115,7 @@ By default, Elixometer only requires the `exometer_core` package. However, some 
 
   defp deps do
     [
-        {:exometer, github: "PSPDFKit-labs/exometer_core"}
+        {:exometer_core, github: "PSPDFKit-labs/exometer_core"}
     ]
   end
 ```
