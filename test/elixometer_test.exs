@@ -53,6 +53,9 @@ defmodule ElixometerTest do
   end
 
   setup do
+    original_env = Application.get_env(:elixometer, :env)
+    on_exit fn -> Application.put_env(:elixometer, :env, original_env) end
+
     :ok
   end
 
@@ -266,6 +269,38 @@ defmodule ElixometerTest do
     wait_for_messages()
 
     assert get_metric_value("elixometer.test.spirals.precomputed_counter", :one) == {:ok, 123}
+  end
+
+  test "name can be precomputed with env config from environmental variable" do
+    System.put_env("ELIXOMETER_ENV", "staging")
+    Application.put_env(:elixometer, :env, {:system, "ELIXOMETER_ENV"})
+
+    name = Elixometer.Utils.name_to_exometer(:spirals, "precomputed_counter")
+    update_spiral(name, 123)
+    wait_for_messages()
+
+    assert get_metric_value("elixometer.staging.spirals.precomputed_counter", :one) == {:ok, 123}
+  end
+
+  test ~s(name can be precomputed with env config from environmental variable and env is "prod") do
+    System.put_env("ELIXOMETER_ENV", "prod")
+    Application.put_env(:elixometer, :env, {:system, "ELIXOMETER_ENV"})
+
+    name = Elixometer.Utils.name_to_exometer(:spirals, "precomputed_counter")
+    update_spiral(name, 123)
+    wait_for_messages()
+
+    assert get_metric_value("elixometer.spirals.precomputed_counter", :one) == {:ok, 123}
+  end
+
+  test "name can be precomputed with env config from environmental variable and env is not set" do
+    Application.put_env(:elixometer, :env, {:system, "ELIXOMETER_MISSING_ENV"})
+
+    name = Elixometer.Utils.name_to_exometer(:spirals, "precomputed_counter_env_not_set")
+    update_spiral(name, 123)
+    wait_for_messages()
+
+    assert get_metric_value("elixometer.spirals.precomputed_counter_env_not_set", :one) == {:ok, 123}
   end
 
   test "getting a value with no arguments" do
