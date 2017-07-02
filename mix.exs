@@ -54,9 +54,9 @@ defmodule Elixometer.Mixfile do
       # https://github.com/basho/lager/pull/321
       {:lager, ">= 3.2.1", override: true},
       {:exometer_core, "~>1.4.0"},
-      {:credo, "~> 0.6", only: [:dev, :test]},
-      {:ex_doc, "~> 0.15", only: :dev},
-      {:excoveralls, "~> 0.6", only: [:dev, :test]},
+      {:credo, "~> 0.8", only: [:dev, :test]},
+      {:ex_doc, "~> 0.16", only: :dev},
+      {:excoveralls, "~> 0.7", only: [:dev, :test]},
       {:pobox, "~>1.0.2"}
     ]
   end
