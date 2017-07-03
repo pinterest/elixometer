@@ -13,6 +13,12 @@ to the default reporter for your environment.
 Add the following to your dependencies in mix.exs:
 
 ```elixir
+{:elixometer, "~> 1.2"}
+```
+
+Or to track the master development branch:
+
+```elixir
 {:elixometer, github: "pinterest/elixometer"}
 ```
 
@@ -26,8 +32,8 @@ it to elixometer like this:
 ```elixir
        config(:exometer_core, report: [reporters: [{:exometer_report_tty, []}]])
        config(:elixometer, reporter: :exometer_report_tty,
-       	    env: Mix.env,
-       	    metric_prefix: "myapp")
+            env: Mix.env,
+            metric_prefix: "myapp")
 ```
 Metrics are prepended with the `metric_prefix`, the type of metric and the environment name.
 
@@ -130,6 +136,6 @@ In case a reporter allows for extra configuration options on subscribe, you can 
 
 ```elixir
        config(:elixometer,
-       	    ...
-       	    subscribe_options: [{:tag, :value1}])
+            ...
+            subscribe_options: [{:tag, :value1}])
 ```
