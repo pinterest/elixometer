@@ -8,4 +8,4 @@ config(:elixometer, update_frequency: 20,
        metric_prefix: "elixometer")
 
 # quiet down logging in test
-config(:lager, [handlers: [lager_console_backend: :critical]])
+config(:lager, [handlers: [lager_console_backend: [level: :critical]]])
