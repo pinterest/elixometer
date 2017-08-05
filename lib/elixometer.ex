@@ -125,10 +125,10 @@ defmodule Elixometer do
   # Elixir 1.5.0-rc changed on_definition/6 to always wrap body in a keyword
   # list (e.g. `[do: body]`). For backwards compatibility, this normalization
   # function wraps earlier versions' bodies in a keyword list, too.
+  defp normalize_body(nil), do: raise "timed function must have a body"
   defp normalize_body(body) do
     case Version.compare(System.version(), "1.5.0-rc") do
       :lt -> [do: body]
-      _ when is_nil(body) -> raise "timed function must have a body"
       _ -> body
     end
   end
