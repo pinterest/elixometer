@@ -221,6 +221,7 @@ defmodule ElixometerTest do
     assert ns > 1_000_000
   end
 
+  @tag elixir: 1.5
   test "a bodyless timer defined in a module raises a RuntimeError" do
     on_exit(fn ->
       :code.delete(BodylessModule)
