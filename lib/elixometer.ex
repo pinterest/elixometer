@@ -122,11 +122,12 @@ defmodule Elixometer do
     end
   end
 
-  defp build_timer_body(%Timer{} = timer_data) do
-    quote do
-      timed(unquote(timer_data.key), unquote(timer_data.units)) do
-        unquote(timer_data.body)
-      end
+  defp build_timer_body(%Timer{body: [do: block]} = timer) do
+    build_timer_body(%{timer | body: block})
+  end
+  defp build_timer_body(%Timer{} = timer) do
+    quote bind_quoted: [key: timer.key, units: timer.units, body: timer.body] do
+      timed key, units, do: body
     end
   end
 

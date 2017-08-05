@@ -218,9 +218,7 @@ defmodule ElixometerTest do
   end
 
   test "a timer defined in the module's declaration" do
-    rv = DeclarativeTest.my_timed_method(1, 2, 3, 4)
-
-    assert rv == 1 + 2 + 3 + 4
+    assert DeclarativeTest.my_timed_method(1, 2, 3, 4) == 10
     assert metric_exists "elixometer.test.timers.declarative_test.my_timed_method"
   end
 
