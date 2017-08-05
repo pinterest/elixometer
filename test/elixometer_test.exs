@@ -48,6 +48,12 @@ defmodule ElixometerTest do
     @timed(key: :auto)
     def auto_named do
     end
+
+    @timed(key: "returning_nil")
+    def timed_returning_nil(), do: nil
+
+    @timed(key: "returning_ast")
+    def timed_returning_ast(), do: [do: :value]
   end
 
   setup do
@@ -217,49 +223,18 @@ defmodule ElixometerTest do
 
   test "a bodyless timer defined in a module raises a RuntimeError" do
     on_exit(fn ->
-      :code.delete(TimedBodylessModule)
-      :code.purge(TimedBodylessModule)
+      :code.delete(BodylessModule)
+      :code.purge(BodylessModule)
     end)
 
     assert_raise RuntimeError, "timed function must have a body", fn ->
-      defmodule TimedBodylessModule do
+      defmodule BodylessModule do
         use Elixometer
         @timed(key: :auto)
         def bodyless
       end
     end
   end
-
-  test "a timer defined in a module can return nil" do
-    on_exit(fn ->
-      :code.delete(TimedNilModule)
-      :code.purge(TimedNilModule)
-    end)
-
-    defmodule TimedNilModule do
-      use Elixometer
-      @timed(key: :auto)
-      def fun(), do: nil
-    end
-
-    assert TimedNilModule.fun() == nil
-  end
-
-  test "a timer defined in a module can return an AST body" do
-    on_exit(fn ->
-      :code.delete(TimedASTModule)
-      :code.purge(TimedASTModule)
-    end)
-
-    defmodule TimedASTModule do
-      use Elixometer
-      @timed(key: :auto)
-      def fun(), do: [do: :value]
-    end
-
-    assert TimedASTModule.fun() == [do: :value]
-  end
-
   test "a timer defined in the module's declaration" do
     assert DeclarativeTest.my_timed_method(1, 2, 3, 4) == 10
     assert metric_exists "elixometer.test.timers.declarative_test.my_timed_method"
@@ -290,6 +265,16 @@ defmodule ElixometerTest do
     DeclarativeTest.auto_named
 
     assert metric_exists "elixometer.test.timers.elixometer_test.declarative_test.auto_named"
+  end
+
+  test "a timer defined in a module can return nil" do
+    assert DeclarativeTest.timed_returning_nil() == nil
+    assert metric_exists "elixometer.test.timers.returning_nil"
+  end
+
+  test "a timer defined in a module can return an AST body" do
+    assert DeclarativeTest.timed_returning_ast() == [do: :value]
+    assert metric_exists "elixometer.test.timers.returning_ast"
   end
 
   test "a spiral registers its name" do
