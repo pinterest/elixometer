@@ -47,9 +47,7 @@ defmodule ElixometerTest do
 
     @timed(key: :auto)
     def auto_named do
-
     end
-
   end
 
   setup do
@@ -215,6 +213,16 @@ defmodule ElixometerTest do
     assert subscription_exists "elixometer.test.timers.nanosecond"
     [{99, ns}] = Reporter.value_for("elixometer.test.timers.nanosecond", 99)
     assert ns > 1_000_000
+  end
+
+  test "a bodyless timer raises a RuntimeError" do
+    assert_raise RuntimeError, "timed function must have a body", fn ->
+      defmodule Inner do
+        use Elixometer
+        @timed(key: "bodyless")
+        def bodyless
+      end
+    end
   end
 
   test "a timer defined in the module's declaration" do
