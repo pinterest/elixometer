@@ -55,9 +55,8 @@ defmodule Elixometer.TestReporter do
   def options_for(metric_name) do
     Application.get_env(:elixometer, :reporter)
     |> :exometer_report.list_subscriptions
-    |> Enum.filter_map(
-      fn {name, _, _, _}  -> name == metric_name end,
-      fn {_, _, _, extra} -> extra end)
+    |> Enum.filter(fn {name, _, _, _}  -> name == metric_name end)
+    |> Enum.map(fn {_, _, _, extra} -> extra end)
     |> case do
       [hd | _] -> hd
       _        -> nil
