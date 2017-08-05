@@ -215,14 +215,49 @@ defmodule ElixometerTest do
     assert ns > 1_000_000
   end
 
-  test "a bodyless timer raises a RuntimeError" do
+  test "a bodyless timer defined in a module raises a RuntimeError" do
+    on_exit(fn ->
+      :code.delete(TimedBodylessModule)
+      :code.purge(TimedBodylessModule)
+    end)
+
     assert_raise RuntimeError, "timed function must have a body", fn ->
-      defmodule Inner do
+      defmodule TimedBodylessModule do
         use Elixometer
-        @timed(key: "bodyless")
+        @timed(key: :auto)
         def bodyless
       end
     end
+  end
+
+  test "a timer defined in a module can return nil" do
+    on_exit(fn ->
+      :code.delete(TimedNilModule)
+      :code.purge(TimedNilModule)
+    end)
+
+    defmodule TimedNilModule do
+      use Elixometer
+      @timed(key: :auto)
+      def fun(), do: nil
+    end
+
+    assert TimedNilModule.fun() == nil
+  end
+
+  test "a timer defined in a module can return an AST body" do
+    on_exit(fn ->
+      :code.delete(TimedASTModule)
+      :code.purge(TimedASTModule)
+    end)
+
+    defmodule TimedASTModule do
+      use Elixometer
+      @timed(key: :auto)
+      def fun(), do: [do: :value]
+    end
+
+    assert TimedASTModule.fun() == [do: :value]
   end
 
   test "a timer defined in the module's declaration" do
