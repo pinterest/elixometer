@@ -1,12 +1,16 @@
 language: elixir
-elixir: 1.3.0
-otp_release: 18.2
+elixir: 1.5.1
+otp_release: 20.0
 matrix:
   include:
-  - elixir: 1.4.5
+  - elixir: 1.3.0
+    otp_release: 18.2
+  - elixir: 1.5.1
     otp_release: 20.0
+env:
+  - MIX_ENV=test
 after_script:
-  - MIX_ENV=test mix coveralls.travis
+  - mix coveralls.travis
 cache:
   directories:
   - $HOME/.mix/archives

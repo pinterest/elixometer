@@ -114,7 +114,7 @@ defmodule Elixometer do
                            %Timer{method_name: name,
                                   args: args,
                                   guards: guards,
-                                  body: body,
+                                  body: normalize_body(body),
                                   units: units,
                                   key: key})
 
@@ -122,11 +122,20 @@ defmodule Elixometer do
     end
   end
 
-  defp build_timer_body(%Timer{} = timer_data) do
-    quote do
-      timed(unquote(timer_data.key), unquote(timer_data.units)) do
-        unquote(timer_data.body)
-      end
+  # Elixir 1.5.0-rc changed on_definition/6 to always wrap body in a keyword
+  # list (e.g. `[do: body]`). For backwards compatibility, this normalization
+  # function wraps earlier versions' bodies in a keyword list, too.
+  defp normalize_body(body) do
+    case Version.compare(System.version(), "1.5.0-rc") do
+      :lt -> [do: body]
+      _ when is_nil(body) -> raise "timed function must have a body"
+      _ -> body
+    end
+  end
+
+  defp build_timer_body(%Timer{key: key, units: units, body: [do: body]}) do
+    quote bind_quoted: [key: key, units: units, body: body] do
+      timed key, units, do: body
     end
   end
 
