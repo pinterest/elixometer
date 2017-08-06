@@ -1,6 +1,6 @@
 defmodule Elixometer do
   @moduledoc ~S"""
-  A light wrapper around [exometer_core](https://hex.pm/packages/exometer_core).
+  A light wrapper around [exometer](https://github.com/Feuerlabs/exometer).
 
   Elixometer allows you to define metrics and subscribe them automatically
   to the default reporter for your environment.
@@ -21,9 +21,10 @@ defmodule Elixometer do
   bitstring. Presently, Elixometer supports timers, histograms, gauges,
   and counters.
 
-  Timings may also be defined by annotating a function with a @timed annotation.
-  This annotation takes a key argument, which tells elixometer what key to use. You
-  can specify :auto and a key will be generated from the module name and method name.
+  Timings may also be defined by annotating a function with a `@timed`
+  annotation. This annotation takes a key argument, which tells elixometer
+  what key to use. You can specify `:auto` and a key will be generated from
+  the module name and method name.
 
   Updating a metric is similarly easy:
 
