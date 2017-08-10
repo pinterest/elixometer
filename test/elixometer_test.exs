@@ -140,14 +140,12 @@ defmodule ElixometerTest do
     name = ["elixometer", "test", "counters", "to_be_cleared"]
 
     wait_for_messages()
-    {:ok, [value: first_val]} = :exometer.get_value(name, :value)
+    assert {:ok, [value: 1]} == :exometer.get_value(name, :value)
 
     clear_counter("to_be_cleared")
-    {:ok, [value: cleared_val]} = :exometer.get_value(name, :value)
+    assert {:ok, [value: 0]} == :exometer.get_value(name, :value)
 
-    assert first_val == 1
-    assert cleared_val == 0
-    assert metric_exists "elixometer.test.counters.to_be_cleared"
+   assert metric_exists "elixometer.test.counters.to_be_cleared"
   end
 
   test "a counter resets itself after its time has elapsed" do
