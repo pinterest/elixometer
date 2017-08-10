@@ -135,6 +135,19 @@ defmodule ElixometerTest do
     assert subscription_exists "elixometer.test.counters.subscription"
   end
 
+  test "clearing a counter sets it to 0" do
+    update_counter("to_be_cleared", 1)
+    name = ["elixometer", "test", "counters", "to_be_cleared"]
+
+    wait_for_messages()
+    assert {:ok, [value: 1]} == :exometer.get_value(name, :value)
+
+    clear_counter("to_be_cleared")
+    assert {:ok, [value: 0]} == :exometer.get_value(name, :value)
+
+   assert metric_exists "elixometer.test.counters.to_be_cleared"
+  end
+
   test "a counter resets itself after its time has elapsed" do
     update_counter("reset", 1, reset_seconds: 1)
 
