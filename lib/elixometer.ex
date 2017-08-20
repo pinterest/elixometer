@@ -369,11 +369,13 @@ defmodule Elixometer do
       reporter = cfg[:reporter]
       interval = cfg[:update_frequency]
       subscribe_options = cfg[:subscribe_options] || []
+      datapoints_blacklist = cfg[:datapoints_blacklist] || []
 
       if reporter do
         metric_name
         |> :exometer.info
         |> Keyword.get(:datapoints)
+        |> Enum.filter(fn(datapoint) -> not Enum.member?(datapoints_blacklist, datapoint) end) 
         |> Enum.map(&(:exometer_report.subscribe(reporter, metric_name, &1, interval, subscribe_options)))
       end
       :ets.insert(@elixometer_table, {{:subscriptions, metric_name}, true})
