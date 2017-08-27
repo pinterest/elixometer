@@ -375,7 +375,7 @@ defmodule Elixometer do
         metric_name
         |> :exometer.info
         |> Keyword.get(:datapoints)
-        |> Enum.filter(fn(datapoint) -> not Enum.member?(datapoints_blacklist, datapoint) end) 
+        |> Enum.reject(&Enum.member?(datapoints_blacklist, &1))
         |> Enum.map(&(:exometer_report.subscribe(reporter, metric_name, &1, interval, subscribe_options)))
       end
       :ets.insert(@elixometer_table, {{:subscriptions, metric_name}, true})

@@ -370,6 +370,18 @@ defmodule ElixometerTest do
 
   end
 
+  test "blacklisting subscriptions works" do
+    # Remove :median from the subscriptions
+    Application.put_env(:elixometer, :datapoints_blacklist, [:median])
+    update_histogram "uniquelittlefoobar", 42
+    wait_for_messages()
+    key = ["elixometer", "test", "histograms", "uniquelittlefoobar"]
+    datapoints = :exometer.info(key)[:datapoints]
+    subscriptions = Enum.filter(Reporter.subscriptions, fn x -> x == key end)
+
+    assert length(subscriptions) < length(datapoints)
+  end
+
   test "getting a datapoint from a metric that doesn't exist" do
     assert {:error, :not_found} == get_metric_value("elixometer.test.bad.bad")
   end
@@ -381,6 +393,7 @@ defmodule ElixometerTest do
 
     assert subscription_exists "elixometer.test.counters.subscribe_options"
     assert [some_option: 42] = Reporter.options_for("elixometer.test.counters.subscribe_options")
+
   end
 
   test "metrics created elsewhere can be retrieved" do
