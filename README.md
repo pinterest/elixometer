@@ -42,6 +42,7 @@ The optional `update_frequency` key of the :elixometer config controls the inter
 
 You can use an environment variable to set the `env`.
 
+
 ```elixir
 config :elixometer, env: {:system, "ELIXOMETER_ENV"}
 ```
@@ -64,6 +65,15 @@ A maximum size of message buffer, defaulting to 1000, can be configured with:
 ```elixir
 config :elixometer, Elixometer.Updater,
   max_messages: 5000
+```
+
+### Blacklisting datapoints subscriptions
+
+By default, adding a histogram adds for example 11 subscriptions (`[:n, :mean, :min, :max, :median, 50, 75, 90, 95, 99, 999]`).
+If you would like to restrict which of these you care about, you can blacklist some with the blacklist like so:
+
+```elixir
+config :elixometer, datapoints_blacklist: [:median, :999]
 ```
 
 ## Metrics
