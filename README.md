@@ -67,13 +67,13 @@ config :elixometer, Elixometer.Updater,
   max_messages: 5000
 ```
 
-### Blacklisting datapoints subscriptions
+### Excluding datapoints subscriptions
 
 By default, adding a histogram adds for example 11 subscriptions (`[:n, :mean, :min, :max, :median, 50, 75, 90, 95, 99, 999]`).
-If you would like to restrict which of these you care about, you can blacklist some with the blacklist like so:
+If you would like to restrict which of these you care about, you can exclude some like so:
 
 ```elixir
-config :elixometer, datapoints_blacklist: [:median, :999]
+config :elixometer, excluded_datapoints: [:median, :999]
 ```
 
 ## Metrics
