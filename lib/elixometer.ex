@@ -75,7 +75,6 @@ defmodule Elixometer do
   end
 
   @elixometer_table :elixometer
-
   alias Elixometer.Updater
   import Elixometer.Utils
   use GenServer
