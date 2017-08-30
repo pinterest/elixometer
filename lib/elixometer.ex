@@ -75,6 +75,7 @@ defmodule Elixometer do
   end
 
   @elixometer_table :elixometer
+
   alias Elixometer.Updater
   import Elixometer.Utils
   use GenServer
@@ -369,13 +370,13 @@ defmodule Elixometer do
       reporter = cfg[:reporter]
       interval = cfg[:update_frequency]
       subscribe_options = cfg[:subscribe_options] || []
-      datapoints_blacklist = cfg[:datapoints_blacklist] || []
+      excluded_datapoints = cfg[:excluded_datapoints] || []
 
       if reporter do
         metric_name
         |> :exometer.info
         |> Keyword.get(:datapoints)
-        |> Enum.reject(&Enum.member?(datapoints_blacklist, &1))
+        |> Enum.reject(&Enum.member?(excluded_datapoints, &1))
         |> Enum.map(&(:exometer_report.subscribe(reporter, metric_name, &1, interval, subscribe_options)))
       end
       :ets.insert(@elixometer_table, {{:subscriptions, metric_name}, true})

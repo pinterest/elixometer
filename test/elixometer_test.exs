@@ -372,7 +372,7 @@ defmodule ElixometerTest do
 
   test "blacklisting subscriptions works" do
     # Remove :median from the subscriptions
-    Application.put_env(:elixometer, :datapoints_blacklist, [:median])
+    Application.put_env(:elixometer, :excluded_datapoints, [:median])
     update_histogram "uniquelittlefoobar", 42
     wait_for_messages()
     key = ["elixometer", "test", "histograms", "uniquelittlefoobar"]
