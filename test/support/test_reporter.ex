@@ -36,7 +36,7 @@ defmodule Elixometer.TestReporter do
   end
 
   def subscription_names do
-    Enum.map(subscriptions, fn({name, datapoint}) -> name end)
+    Enum.map(subscriptions, fn({name, _datapoint}) -> name end)
   end
 
   def value_for(metric_name, datapoint) when is_bitstring(metric_name) do
