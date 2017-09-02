@@ -76,20 +76,20 @@ defmodule ElixometerTest do
     metric_name in Reporter.metric_names
   end
 
-  def subscription_exists(metric_name) when is_bitstring(metric_name) do
-    metric_name |> String.split(".") |> subscription_exists
+  def subscription_exists?(metric_name) when is_bitstring(metric_name) do
+    metric_name |> String.split(".") |> subscription_exists?
   end
 
-  def subscription_exists(metric_name) when is_list(metric_name) do
+  def subscription_exists?(metric_name) when is_list(metric_name) do
     wait_for_messages()
     metric_name in Reporter.subscription_names
   end
 
-  def subscription_exists(metric_name, datapoint) when is_bitstring(metric_name) do
-    metric_name |> String.split(".") |> subscription_exists(datapoint)
+  def subscription_exists?(metric_name, datapoint) when is_bitstring(metric_name) do
+    metric_name |> String.split(".") |> subscription_exists?(datapoint)
   end
 
-  def subscription_exists(metric_name, datapoint) when is_list(metric_name) do
+  def subscription_exists?(metric_name, datapoint) when is_list(metric_name) do
     wait_for_messages()
     {metric_name, datapoint} in Reporter.subscriptions
   end
@@ -103,7 +103,7 @@ defmodule ElixometerTest do
   test "a gauge automatically subscribes" do
     update_gauge("subscription", 10)
 
-    assert subscription_exists "elixometer.test.gauges.subscription"
+    assert subscription_exists? "elixometer.test.gauges.subscription"
   end
 
   test "a histogram registers its name" do
@@ -115,7 +115,7 @@ defmodule ElixometerTest do
   test "a histogram automatically subscribes" do
     update_histogram("subscription", 1)
 
-    assert subscription_exists "elixometer.test.histograms.subscription"
+    assert subscription_exists? "elixometer.test.histograms.subscription"
   end
 
   test "a histogram does not truncate percentiles" do
@@ -141,7 +141,7 @@ defmodule ElixometerTest do
   test "a counter automatically subscribes" do
     update_counter("subscription", 1)
 
-    assert subscription_exists "elixometer.test.counters.subscription"
+    assert subscription_exists? "elixometer.test.counters.subscription"
   end
 
   test "clearing a counter sets it to 0" do
@@ -208,13 +208,13 @@ defmodule ElixometerTest do
   test "a timer automatically subscribes" do
     timed("subscription", do: 1 + 1)
 
-    assert subscription_exists "elixometer.test.timers.subscription"
+    assert subscription_exists? "elixometer.test.timers.subscription"
   end
 
   test "a timer can time in seconds" do
     timed("second", :second, do: :timer.sleep(1))
 
-    assert subscription_exists "elixometer.test.timers.second"
+    assert subscription_exists? "elixometer.test.timers.second"
     [{99, s}] = Reporter.value_for("elixometer.test.timers.second", 99)
     assert s <= 1
   end
@@ -222,7 +222,7 @@ defmodule ElixometerTest do
   test "a timer can time in milliseconds" do
     timed("millisecond", :millisecond, do: :timer.sleep(1))
 
-    assert subscription_exists "elixometer.test.timers.millisecond"
+    assert subscription_exists? "elixometer.test.timers.millisecond"
     [{99, ms}] = Reporter.value_for("elixometer.test.timers.millisecond", 99)
     assert ms <= 10
   end
@@ -230,7 +230,7 @@ defmodule ElixometerTest do
   test "a timer times in microseconds by default" do
     timed("microsecond", do: :timer.sleep(1))
 
-    assert subscription_exists "elixometer.test.timers.microsecond"
+    assert subscription_exists? "elixometer.test.timers.microsecond"
     [{_data_point, value}] = Reporter.value_for("elixometer.test.timers.microsecond", 99)
     assert value > 1000
   end
@@ -238,7 +238,7 @@ defmodule ElixometerTest do
   test "a timer can time in nanoseconds" do
     timed("nanosecond", :nanosecond, do: :timer.sleep(1))
 
-    assert subscription_exists "elixometer.test.timers.nanosecond"
+    assert subscription_exists? "elixometer.test.timers.nanosecond"
     [{99, ns}] = Reporter.value_for("elixometer.test.timers.nanosecond", 99)
     assert ns > 1_000_000
   end
@@ -309,7 +309,7 @@ defmodule ElixometerTest do
   test "a spiral subscribes" do
     update_spiral("subscription", 1)
 
-    assert subscription_exists "elixometer.test.spirals.subscription"
+    assert subscription_exists? "elixometer.test.spirals.subscription"
   end
 
   test "name can be precomputed" do
@@ -385,7 +385,7 @@ defmodule ElixometerTest do
     update_histogram "uniquelittlefoobar", 42
     key = ["elixometer", "test", "histograms", "uniquelittlefoobar"]
 
-    assert not subscription_exists(key, :median)
+    refute subscription_exists?(key, :median)
   end
 
   test "getting a datapoint from a metric that doesn't exist" do
@@ -397,7 +397,7 @@ defmodule ElixometerTest do
 
     update_counter("subscribe_options", 1)
 
-    assert subscription_exists "elixometer.test.counters.subscribe_options"
+    assert subscription_exists? "elixometer.test.counters.subscribe_options"
     assert [some_option: 42] = Reporter.options_for("elixometer.test.counters.subscribe_options")
 
   end
