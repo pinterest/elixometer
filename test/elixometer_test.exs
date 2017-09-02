@@ -82,7 +82,16 @@ defmodule ElixometerTest do
 
   def subscription_exists(metric_name) when is_list(metric_name) do
     wait_for_messages()
-    metric_name in Reporter.subscriptions
+    metric_name in Reporter.subscription_names
+  end
+
+  def subscription_exists(metric_name, datapoint) when is_bitstring(metric_name) do
+    metric_name |> String.split(".") |> subscription_exists(datapoint)
+  end
+
+  def subscription_exists(metric_name, datapoint) when is_list(metric_name) do
+    wait_for_messages()
+    {metric_name, datapoint} in Reporter.subscriptions
   end
 
   test "a gauge registers its name" do
@@ -374,12 +383,9 @@ defmodule ElixometerTest do
     # Remove :median from the subscriptions
     Application.put_env(:elixometer, :excluded_datapoints, [:median])
     update_histogram "uniquelittlefoobar", 42
-    wait_for_messages()
     key = ["elixometer", "test", "histograms", "uniquelittlefoobar"]
-    datapoints = :exometer.info(key)[:datapoints]
-    subscriptions = Enum.filter(Reporter.subscriptions, fn x -> x == key end)
 
-    assert length(subscriptions) < length(datapoints)
+    assert not subscription_exists(key, :median)
   end
 
   test "getting a datapoint from a metric that doesn't exist" do
