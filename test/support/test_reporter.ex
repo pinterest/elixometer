@@ -32,7 +32,11 @@ defmodule Elixometer.TestReporter do
   def subscriptions do
     Application.get_env(:elixometer, :reporter)
     |> :exometer_report.list_subscriptions
-    |> Enum.map(fn({metric_name, _, _, _}) -> metric_name end)
+    |> Enum.map(fn({metric_name, datapoint, _, _}) -> {metric_name, datapoint} end)
+  end
+
+  def subscription_names do
+    Enum.map(subscriptions(), fn({name, _datapoint}) -> name end)
   end
 
   def value_for(metric_name, datapoint) when is_bitstring(metric_name) do
