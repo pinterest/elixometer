@@ -67,29 +67,29 @@ defmodule ElixometerTest do
     :timer.sleep 50
   end
 
-  def metric_exists(metric_name) when is_bitstring(metric_name) do
-    metric_name |> String.split(".") |> metric_exists
+  defp metric_exists?(metric_name) when is_bitstring(metric_name) do
+    metric_name |> String.split(".") |> metric_exists?
   end
 
-  def metric_exists(metric_name) when is_list(metric_name) do
+  defp metric_exists?(metric_name) when is_list(metric_name) do
     wait_for_messages()
     metric_name in Reporter.metric_names
   end
 
-  def subscription_exists?(metric_name) when is_bitstring(metric_name) do
+  defp subscription_exists?(metric_name) when is_bitstring(metric_name) do
     metric_name |> String.split(".") |> subscription_exists?
   end
 
-  def subscription_exists?(metric_name) when is_list(metric_name) do
+  defp subscription_exists?(metric_name) when is_list(metric_name) do
     wait_for_messages()
     metric_name in Reporter.subscription_names
   end
 
-  def subscription_exists?(metric_name, datapoint) when is_bitstring(metric_name) do
+  defp subscription_exists?(metric_name, datapoint) when is_bitstring(metric_name) do
     metric_name |> String.split(".") |> subscription_exists?(datapoint)
   end
 
-  def subscription_exists?(metric_name, datapoint) when is_list(metric_name) do
+  defp subscription_exists?(metric_name, datapoint) when is_list(metric_name) do
     wait_for_messages()
     {metric_name, datapoint} in Reporter.subscriptions
   end
@@ -97,7 +97,7 @@ defmodule ElixometerTest do
   test "a gauge registers its name" do
     update_gauge("register", 10)
 
-    assert metric_exists "elixometer.test.gauges.register"
+    assert metric_exists? "elixometer.test.gauges.register"
   end
 
   test "a gauge automatically subscribes" do
@@ -109,7 +109,7 @@ defmodule ElixometerTest do
   test "a histogram registers its name" do
     update_histogram("register", 10)
 
-    assert metric_exists "elixometer.test.histograms.register"
+    assert metric_exists? "elixometer.test.histograms.register"
   end
 
   test "a histogram automatically subscribes" do
@@ -135,7 +135,7 @@ defmodule ElixometerTest do
   test "a counter registers its name" do
     update_counter("register", 1)
 
-    assert metric_exists "elixometer.test.counters.register"
+    assert metric_exists? "elixometer.test.counters.register"
   end
 
   test "a counter automatically subscribes" do
@@ -154,7 +154,7 @@ defmodule ElixometerTest do
     clear_counter("to_be_cleared")
     assert {:ok, [value: 0]} == :exometer.get_value(name, :value)
 
-   assert metric_exists "elixometer.test.counters.to_be_cleared"
+   assert metric_exists? "elixometer.test.counters.to_be_cleared"
   end
 
   test "a counter resets itself after its time has elapsed" do
@@ -202,7 +202,7 @@ defmodule ElixometerTest do
   test "a timer registers its name" do
     timed("register", do: 1 + 1)
 
-    assert metric_exists "elixometer.test.timers.register"
+    assert metric_exists? "elixometer.test.timers.register"
   end
 
   test "a timer automatically subscribes" do
@@ -260,50 +260,50 @@ defmodule ElixometerTest do
   end
   test "a timer defined in the module's declaration" do
     assert DeclarativeTest.my_timed_method(1, 2, 3, 4) == 10
-    assert metric_exists "elixometer.test.timers.declarative_test.my_timed_method"
+    assert metric_exists? "elixometer.test.timers.declarative_test.my_timed_method"
   end
 
   test "a timer defined in the module's definition is specific to an arity" do
     DeclarativeTest.arity_test(1)
 
-    refute metric_exists "elixometer.test.timers.arity_test"
+    refute metric_exists? "elixometer.test.timers.arity_test"
 
     DeclarativeTest.arity_test(1, 2)
-    assert metric_exists "elixometer.test.timers.arity_test"
+    assert metric_exists? "elixometer.test.timers.arity_test"
   end
 
   test "a timer defined with attributes and docs" do
     DeclarativeTest.timed_with_doc
 
-    assert metric_exists "elixometer.test.timers.timed_with_doc"
+    assert metric_exists? "elixometer.test.timers.timed_with_doc"
   end
 
   test "a timer defined with attributes works with defp" do
     DeclarativeTest.public_secret_timed
 
-    assert metric_exists "elixometer.test.timers.defp_timed"
+    assert metric_exists? "elixometer.test.timers.defp_timed"
   end
 
   test "a timer defined with no key auto generates one" do
     DeclarativeTest.auto_named
 
-    assert metric_exists "elixometer.test.timers.elixometer_test.declarative_test.auto_named"
+    assert metric_exists? "elixometer.test.timers.elixometer_test.declarative_test.auto_named"
   end
 
   test "a timer defined in a module can return nil" do
     assert DeclarativeTest.timed_returning_nil() == nil
-    assert metric_exists "elixometer.test.timers.returning_nil"
+    assert metric_exists? "elixometer.test.timers.returning_nil"
   end
 
   test "a timer defined in a module can return an AST body" do
     assert DeclarativeTest.timed_returning_ast() == [do: :value]
-    assert metric_exists "elixometer.test.timers.returning_ast"
+    assert metric_exists? "elixometer.test.timers.returning_ast"
   end
 
   test "a spiral registers its name" do
     update_spiral("register", 1)
 
-    assert metric_exists "elixometer.test.spirals.register"
+    assert metric_exists? "elixometer.test.spirals.register"
   end
 
   test "a spiral subscribes" do
