@@ -1,7 +1,7 @@
 %{configs: [
   %{name: "default",
     files: %{
-      included: ["lib/", "test/"],
+      included: ["lib/", "config/", "test/"],
       excluded: [~r"/_build/", ~r"/deps/"]
     },
     requires: [],
