@@ -79,9 +79,7 @@ defmodule Elixometer do
   import Elixometer.Utils
   use GenServer
 
-
   defmacro __using__(_mod) do
-
     quote do
       import Elixometer
       Module.register_attribute(__MODULE__, :elixometer_timers, accumulate: true)
@@ -311,12 +309,10 @@ defmodule Elixometer do
   subscribed to an exometer reporter
   """
   def ensure_registered(metric_name, register_fn) do
-    try do
-      ensure_metric_defined(metric_name, register_fn)
-      subscribe(metric_name)
-    rescue
-      e in ErlangError -> e
-    end
+    ensure_metric_defined(metric_name, register_fn)
+    subscribe(metric_name)
+  rescue
+    e in ErlangError -> e
   end
 
   @doc """

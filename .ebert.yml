@@ -1,0 +1,8 @@
+styleguide: false
+engines:
+  credo:
+    enabled: true
+  remark-lint:
+    enabled: true
+exclude_paths:
+- doc
