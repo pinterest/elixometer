@@ -225,7 +225,7 @@ defmodule Elixometer do
   end
 
   defp get_values_total(values, data_point) do
-    result = Enum.reduce_while(values, 0, fn({_, attrs}, total) ->
+    Enum.reduce_while(values, 0, fn({_, attrs}, total) ->
       case Keyword.get(attrs, data_point) do
         nil -> {:halt, :not_found}
         value -> {:cont, total + value}
