@@ -376,12 +376,12 @@ defmodule ElixometerTest do
   end
 
   test "getting a specific metric for a wildcard key" do
-    update_gauge "user1", 100
-    update_gauge "user2", 15
+    update_gauge "users.registered", 100
+    update_gauge "users.anonymous", 15
 
     wait_for_messages()
 
-    assert {:ok, 115} == get_metric_values("elixometer.test.gauges._", :value)
+    assert {:ok, 115} == get_metric_values("elixometer.test.gauges.users._", :value)
   end
 
   test "getting a value for a metric that doesn't exist" do
