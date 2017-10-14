@@ -198,9 +198,39 @@ defmodule Elixometer do
     end
   end
 
+  def get_metric_values(metric_name) do
+    metric_name
+    |> to_exometer_key
+    |> get_values
+  end
+
+  def get_metric_values(metric_name, data_point) do
+    metric_val = metric_name
+    |> get_metric_values
+    |> get_values_total(data_point)
+
+    case metric_val do
+      :not_found -> {:error, :not_found}
+      total -> {:ok, total}
+    end
+  end
+
   defp to_exometer_key(metric_name) when is_list(metric_name), do: metric_name
   defp to_exometer_key(metric_name) when is_binary(metric_name) do
     String.split(metric_name, ".")
+  end
+
+  defp get_values(key) do
+    :exometer.get_values((key -- ["_"]) ++ [:_]) 
+  end
+
+  defp get_values_total(values, data_point) do
+    result = Enum.reduce_while(values, 0, fn({_, attrs}, total) ->
+      case Keyword.get(attrs, data_point) do
+        nil -> {:halt, :not_found}
+        value -> {:cont, total + value}
+      end
+    end)
   end
 
   @doc """

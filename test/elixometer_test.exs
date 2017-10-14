@@ -358,12 +358,30 @@ defmodule ElixometerTest do
     assert :exometer.get_value([:elixometer, :test, :gauges, :value]) == get_metric_value("elixometer.test.gauges.value")
   end
 
+  test "getting a value with no arguments for a wildcard key" do
+    update_gauge "user1", 100
+    update_gauge "user2", 15
+
+    wait_for_messages()
+
+    assert :exometer.get_values(["elixometer", "test", "gauges", :_]) == get_metric_values("elixometer.test.gauges._")
+  end
+
   test "getting a specific metric" do
     update_gauge "value_2", 23
 
     wait_for_messages()
 
     assert {:ok, 23} == get_metric_value("elixometer.test.gauges.value_2", :value)
+  end
+
+  test "getting a specific metric for a wildcard key" do
+    update_gauge "user1", 100
+    update_gauge "user2", 15
+
+    wait_for_messages()
+
+    assert {:ok, 115} == get_metric_values("elixometer.test.gauges._", :value)
   end
 
   test "getting a value for a metric that doesn't exist" do
