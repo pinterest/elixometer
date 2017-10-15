@@ -220,7 +220,7 @@ defmodule Elixometer do
     String.split(metric_name, ".")
   end
 
-  defp get_values(key) do
+  defp get_values(key) when is_list(key) do
     :exometer.get_values((key -- ["_"]) ++ [:_]) 
   end
 
