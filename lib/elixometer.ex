@@ -374,8 +374,7 @@ defmodule Elixometer do
       if reporter do
         metric_name
         |> :exometer.info
-        |> Keyword.get(:value)
-        |> Keyword.keys()
+        |> get_datapoints()
         |> Enum.reject(&Enum.member?(excluded_datapoints, &1))
         |> Enum.map(&(:exometer_report.subscribe(reporter, metric_name, &1, interval, subscribe_options)))
       end
@@ -383,4 +382,14 @@ defmodule Elixometer do
     end
   end
 
+  defp get_datapoints(info) do
+    case Keyword.fetch(info, :datapoints) do
+      {:ok, datapoints} ->
+        datapoints
+      :error ->
+        info
+        |> Keyword.fetch!(:value)
+        |> Keyword.keys()
+    end
+  end
 end
