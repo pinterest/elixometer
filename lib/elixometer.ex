@@ -133,9 +133,7 @@ defmodule Elixometer do
   end
 
   defp build_timer_body(%Timer{key: key, units: units, body: [do: body]}) do
-    quote bind_quoted: [key: key, units: units, body: body] do
-      timed key, units, do: body
-    end
+    build_timer(key, units, body)
   end
 
   defmacro __before_compile__(env) do
@@ -292,6 +290,10 @@ defmodule Elixometer do
   actually provide this much granularity.
   """
   defmacro timed(name, units \\ :microsecond, do: block) do
+    build_timer(name, units, block)
+  end
+
+  defp build_timer(name, units, block) do
     quote do
       {elapsed_us, rv} = :timer.tc(fn -> unquote(block) end)
       Updater.timer(unquote(name), unquote(units), elapsed_us)

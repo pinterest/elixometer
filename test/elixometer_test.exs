@@ -54,6 +54,9 @@ defmodule ElixometerTest do
 
     @timed(key: "returning_ast")
     def timed_returning_ast(), do: [do: :value]
+
+    @timed(key: "sleep", units: :millisecond)
+    def timed_sleep(duration), do: :timer.sleep(duration)
   end
 
   setup do
@@ -258,6 +261,14 @@ defmodule ElixometerTest do
       end
     end
   end
+
+  test "a timer defined with attributes measures time" do
+    DeclarativeTest.timed_sleep(100)
+    assert subscription_exists? "elixometer.test.timers.sleep"
+    [{99, ns}] = Reporter.value_for("elixometer.test.timers.sleep", 99)
+    assert ns in 100..1_000
+  end
+
   test "a timer defined in the module's declaration" do
     assert DeclarativeTest.my_timed_method(1, 2, 3, 4) == 10
     assert metric_exists? "elixometer.test.timers.declarative_test.my_timed_method"
