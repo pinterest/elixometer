@@ -73,7 +73,7 @@ By default, adding a histogram adds for example 11 subscriptions (`[:n, :mean, :
 If you would like to restrict which of these you care about, you can exclude some like so:
 
 ```elixir
-config :elixometer, excluded_datapoints: [:median, :999]
+config :elixometer, excluded_datapoints: [:median, 999]
 ```
 
 ## Metrics
