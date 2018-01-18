@@ -2,8 +2,8 @@ defmodule Elixometer.Mixfile do
   use Mix.Project
 
   @description """
-  Elixometer is a light wrapper around exometer that defines and subscribes
-  metrics automatically to the configured reporter.
+  Elixometer is a light wrapper around exometer that defines and
+  subscribes metrics automatically to the configured reporter.
   """
 
   @project_url "https://github.com/pinterest/elixometer"
