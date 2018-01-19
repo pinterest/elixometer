@@ -57,8 +57,8 @@ defmodule Elixometer.Mixfile do
       {:setup, "1.8.4", override: true, manager: :rebar},
       {:exometer_core, "~> 1.4"},
       {:credo, "~> 0.8", only: [:dev, :test]},
-      {:ex_doc, "~> 0.16", only: :dev},
-      {:excoveralls, "~> 0.7", only: [:dev, :test]},
+      {:ex_doc, "~> 0.18", only: :dev},
+      {:excoveralls, "~> 0.8", only: [:dev, :test]},
       {:pobox, "~>1.0.2"}
     ]
   end
