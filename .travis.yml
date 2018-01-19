@@ -1,4 +1,7 @@
 language: elixir
+branches:
+  only:
+    - "master"
 matrix:
   include:
   - elixir: 1.3
