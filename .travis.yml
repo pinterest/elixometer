@@ -13,10 +13,9 @@ matrix:
     env: CMD=coveralls.travis
 env:
   - CMD=test
-  - MIX_ENV=test
 script:
-  - mix deps.compile
-  - mix $CMD
+  - MIX_ENV=test mix deps.compile
+  - MIX_ENV=test mix $CMD
 cache:
   directories:
   - $HOME/.mix/archives
