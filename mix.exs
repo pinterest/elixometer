@@ -24,6 +24,9 @@ defmodule Elixometer.Mixfile do
                          "coveralls.post": :test],
      elixirc_paths: elixirc_paths(Mix.env),
 
+     # Dialyzer
+     dialyzer: [plt_add_deps: :transitive],
+
      # Docs
      name: "Elixometer",
      docs: [
@@ -57,6 +60,7 @@ defmodule Elixometer.Mixfile do
       {:setup, "1.8.4", override: true, manager: :rebar},
       {:exometer_core, "~> 1.4"},
       {:credo, "~> 0.8", only: [:dev, :test]},
+      {:dialyxir, "~> 0.5", only: :dev, runtime: false},
       {:ex_doc, "~> 0.18", only: :dev},
       {:excoveralls, "~> 0.8", only: [:dev, :test]},
       {:pobox, "~>1.0.2"}
