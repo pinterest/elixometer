@@ -262,7 +262,7 @@ defmodule Elixometer do
   If the value of the `:reset_seconds` option is greater than zero, the counter will be reset
   automatically at the specified interval.
   """
-  @spec update_counter(String.t, number, [reset_seconds: nil | integer]) :: :ok
+  @spec update_counter(String.t, integer, [reset_seconds: nil | integer]) :: :ok
   def update_counter(name, delta, [reset_seconds: secs] \\ [reset_seconds: nil]) when is_bitstring(name) and (is_nil(secs) or secs >= 1) do
     Updater.counter(name, delta, secs)
   end
