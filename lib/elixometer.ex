@@ -53,6 +53,7 @@ defmodule Elixometer do
        end
 
   """
+  @type metric_name :: charlist | bitstring
 
   defmodule App do
     @moduledoc false
@@ -178,12 +179,14 @@ defmodule Elixometer do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
+  @spec get_metric_value(metric_name) :: {:ok, any} | {:error, :not_found}
   def get_metric_value(metric_name) do
     metric_name
     |> to_exometer_key
     |> :exometer.get_value
   end
 
+  @spec get_metric_value(metric_name, :exometer.datapoint) :: {:ok, any} | {:error, :not_found}
   def get_metric_value(metric_name, data_point) do
     metric_val =
       metric_name
@@ -196,12 +199,14 @@ defmodule Elixometer do
     end
   end
 
+  @spec get_metric_values(metric_name) :: [{:exometer.name, :exometer.type, :exometer.status}]
   def get_metric_values(metric_name) do
     metric_name
     |> to_exometer_key
     |> get_values
   end
 
+  @spec get_metric_values(metric_name, :exometer.datapoint) :: {:ok, integer} | {:error, :not_found}
   def get_metric_values(metric_name, data_point) do
     metric_val = metric_name
     |> get_metric_values
@@ -235,6 +240,7 @@ defmodule Elixometer do
   Updates a histogram with a new value. If the metric doesn't exist, a new metric
   is created and subscribed to.
   """
+  @spec update_histogram(bitstring, float, pos_integer, boolean) :: :ok
   def update_histogram(name, delta, aggregate_seconds \\ 60, truncate \\ true) when is_bitstring(name) do
     Updater.histogram(name, delta, aggregate_seconds, truncate)
   end
@@ -244,6 +250,7 @@ defmodule Elixometer do
   of internal slots that "age out" and are replaced by newer values. This is useful for
   maintaining QPS stats.
   """
+  @spec update_spiral(bitstring, float, [time_span: pos_integer, slot_period: pos_integer]) :: :ok
   def update_spiral(name, delta, opts \\ [time_span: :timer.seconds(60), slot_period: 1000]) do
     Updater.spiral(name, delta, opts)
   end
@@ -255,6 +262,7 @@ defmodule Elixometer do
   If the value of the `:reset_seconds` option is greater than zero, the counter will be reset
   automatically at the specified interval.
   """
+  @spec update_counter(bitstring, float, [reset_seconds: nil | pos_integer]) :: :ok
   def update_counter(name, delta, [reset_seconds: secs] \\ [reset_seconds: nil]) when is_bitstring(name) and (is_nil(secs) or secs >= 1) do
     Updater.counter(name, delta, secs)
   end
@@ -262,10 +270,10 @@ defmodule Elixometer do
   @doc """
   Clears a counter with the given name.
   """
+  @spec clear_counter(metric_name) :: :ok | {:error, any}
   def clear_counter(metric_name) when is_bitstring(metric_name) do
     clear_counter(name_to_exometer(:counters, metric_name))
   end
-
   def clear_counter(metric_name) when is_list(metric_name)  do
     :exometer.reset(metric_name)
   end
@@ -274,6 +282,7 @@ defmodule Elixometer do
   Updates a gauge metric. If the metric doesn't exist, the metric is created
   and the metric is subscribed to the default reporter.
   """
+  @spec update_gauge(bitstring, float) :: :ok
   def update_gauge(name, value) when is_bitstring(name) do
     Updater.gauge(name, value)
   end
