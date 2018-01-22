@@ -53,7 +53,7 @@ defmodule Elixometer do
        end
 
   """
-  @type metric_name :: charlist | bitstring
+  @type metric_name :: String.t | String.Chars.t
 
   defmodule App do
     @moduledoc false
@@ -240,7 +240,7 @@ defmodule Elixometer do
   Updates a histogram with a new value. If the metric doesn't exist, a new metric
   is created and subscribed to.
   """
-  @spec update_histogram(bitstring, float, pos_integer, boolean) :: :ok
+  @spec update_histogram(String.t, number, pos_integer, boolean) :: :ok
   def update_histogram(name, delta, aggregate_seconds \\ 60, truncate \\ true) when is_bitstring(name) do
     Updater.histogram(name, delta, aggregate_seconds, truncate)
   end
@@ -250,7 +250,7 @@ defmodule Elixometer do
   of internal slots that "age out" and are replaced by newer values. This is useful for
   maintaining QPS stats.
   """
-  @spec update_spiral(bitstring, float, [time_span: pos_integer, slot_period: pos_integer]) :: :ok
+  @spec update_spiral(String.t, number, [time_span: pos_integer, slot_period: pos_integer]) :: :ok
   def update_spiral(name, delta, opts \\ [time_span: :timer.seconds(60), slot_period: 1000]) do
     Updater.spiral(name, delta, opts)
   end
@@ -262,7 +262,7 @@ defmodule Elixometer do
   If the value of the `:reset_seconds` option is greater than zero, the counter will be reset
   automatically at the specified interval.
   """
-  @spec update_counter(bitstring, float, [reset_seconds: nil | pos_integer]) :: :ok
+  @spec update_counter(String.t, number, [reset_seconds: nil | integer]) :: :ok
   def update_counter(name, delta, [reset_seconds: secs] \\ [reset_seconds: nil]) when is_bitstring(name) and (is_nil(secs) or secs >= 1) do
     Updater.counter(name, delta, secs)
   end
@@ -282,7 +282,7 @@ defmodule Elixometer do
   Updates a gauge metric. If the metric doesn't exist, the metric is created
   and the metric is subscribed to the default reporter.
   """
-  @spec update_gauge(bitstring, float) :: :ok
+  @spec update_gauge(String.t, number) :: :ok
   def update_gauge(name, value) when is_bitstring(name) do
     Updater.gauge(name, value)
   end
