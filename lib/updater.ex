@@ -55,7 +55,12 @@ defmodule Elixometer.Updater do
     monitor = formatter.(:histograms, name)
 
     ensure_registered(monitor, fn ->
-      :exometer.new(monitor, :histogram, [time_span: :timer.seconds(aggregate_seconds), truncate: truncate])
+      :exometer.new(
+        monitor,
+        :histogram,
+        time_span: :timer.seconds(aggregate_seconds),
+        truncate: truncate
+      )
     end)
 
     :exometer.update(monitor, delta)
@@ -63,8 +68,9 @@ defmodule Elixometer.Updater do
 
   def do_update({:spiral, name, delta, opts}, formatter) do
     monitor = formatter.(:spirals, name)
+
     ensure_registered(monitor, fn ->
-      :exometer.new(monitor, :spiral,  opts)
+      :exometer.new(monitor, :spiral, opts)
     end)
 
     :exometer.update(monitor, delta)
@@ -76,7 +82,7 @@ defmodule Elixometer.Updater do
     ensure_registered(monitor, fn ->
       :exometer.new(monitor, :counter, [])
 
-      if is_nil reset_seconds do
+      if is_nil(reset_seconds) do
         add_counter(monitor)
       else
         add_counter(monitor, reset_seconds * 1000)
@@ -115,6 +121,6 @@ defmodule Elixometer.Updater do
   end
 
   defp activate_pobox do
-    :pobox.active(:elixometer_pobox, fn(msg, _) -> {{:ok, msg}, :nostate} end, :nostate)
+    :pobox.active(:elixometer_pobox, fn msg, _ -> {{:ok, msg}, :nostate} end, :nostate)
   end
 end

@@ -53,7 +53,7 @@ defmodule Elixometer do
        end
 
   """
-  @type metric_name :: String.t | String.Chars.t
+  @type metric_name :: String.t() | String.Chars.t()
 
   defmodule App do
     @moduledoc false
@@ -61,13 +61,13 @@ defmodule Elixometer do
     use Application
 
     def start(_type, _args_) do
-      Elixometer.Supervisor.start_link
+      Elixometer.Supervisor.start_link()
     end
   end
 
   defmodule Config do
     @moduledoc false
-    defstruct table_name: nil, counters: Map.new
+    defstruct table_name: nil, counters: Map.new()
   end
 
   defmodule Timer do
@@ -94,29 +94,34 @@ defmodule Elixometer do
     timer_info = Module.get_attribute(mod, :timed)
 
     if timer_info do
-      key = case timer_info[:key] do
-              :auto ->
-                # Convert a fully qualified module to an underscored representation.
-                # Module.SubModule.SubSubModule will become
-                # module.sub_module.sub_sub_module
-                prefix = mod
-                |> inspect
-                |> String.replace(~r/([a-z])([A-Z])/, ~S"\1_\2")
-                |> String.downcase
+      key =
+        case timer_info[:key] do
+          :auto ->
+            # Convert a fully qualified module to an underscored representation.
+            # Module.SubModule.SubSubModule will become
+            # module.sub_module.sub_sub_module
+            prefix =
+              mod
+              |> inspect
+              |> String.replace(~r/([a-z])([A-Z])/, ~S"\1_\2")
+              |> String.downcase()
 
-                "#{prefix}.#{name}"
+            "#{prefix}.#{name}"
 
-              other -> other
-            end
+          other ->
+            other
+        end
 
       units = timer_info[:units] || :microsecond
-      Module.put_attribute(mod, :elixometer_timers,
-                           %Timer{method_name: name,
-                                  args: args,
-                                  guards: guards,
-                                  body: normalize_body(body),
-                                  units: units,
-                                  key: key})
+
+      Module.put_attribute(mod, :elixometer_timers, %Timer{
+        method_name: name,
+        args: args,
+        guards: guards,
+        body: normalize_body(body),
+        units: units,
+        key: key
+      })
 
       Module.delete_attribute(mod, :timed)
     end
@@ -140,31 +145,36 @@ defmodule Elixometer do
   defmacro __before_compile__(env) do
     mod = env.module
     timers = Module.get_attribute(mod, :elixometer_timers)
-    timed_methods = timers
-    |> Enum.reverse
-    |> Enum.map(
-        fn(%Timer{} = timer_data) ->
-          Module.make_overridable(mod,
-                                  [{timer_data.method_name, length(timer_data.args)}])
-          body = build_timer_body(timer_data)
-          if length(timer_data.guards) > 0 do
-            quote do
-              def unquote(timer_data.method_name)(unquote_splicing(timer_data.args)) when unquote_splicing(timer_data.guards) do
-                unquote(body)
-              end
-            end
 
-          else
-            quote do
-              def unquote(timer_data.method_name)(unquote_splicing(timer_data.args))  do
-                unquote(body)
-              end
+    timed_methods =
+      timers
+      |> Enum.reverse()
+      |> Enum.map(fn %Timer{} = timer_data ->
+        Module.make_overridable(
+          mod,
+          [{timer_data.method_name, length(timer_data.args)}]
+        )
+
+        body = build_timer_body(timer_data)
+
+        if length(timer_data.guards) > 0 do
+          quote do
+            def unquote(timer_data.method_name)(unquote_splicing(timer_data.args))
+                when unquote_splicing(timer_data.guards) do
+              unquote(body)
             end
           end
-        end)
+        else
+          quote do
+            def unquote(timer_data.method_name)(unquote_splicing(timer_data.args)) do
+              unquote(body)
+            end
+          end
+        end
+      end)
 
     quote do
-      unquote_splicing(timed_methods)
+      (unquote_splicing(timed_methods))
     end
   end
 
@@ -183,10 +193,10 @@ defmodule Elixometer do
   def get_metric_value(metric_name) do
     metric_name
     |> to_exometer_key
-    |> :exometer.get_value
+    |> :exometer.get_value()
   end
 
-  @spec get_metric_value(metric_name, :exometer.datapoint) :: {:ok, any} | {:error, :not_found}
+  @spec get_metric_value(metric_name, :exometer.datapoint()) :: {:ok, any} | {:error, :not_found}
   def get_metric_value(metric_name, data_point) do
     metric_val =
       metric_name
@@ -199,18 +209,22 @@ defmodule Elixometer do
     end
   end
 
-  @spec get_metric_values(metric_name) :: [{:exometer.name, :exometer.type, :exometer.status}]
+  @spec get_metric_values(metric_name) :: [
+          {:exometer.name(), :exometer.type(), :exometer.status()}
+        ]
   def get_metric_values(metric_name) do
     metric_name
     |> to_exometer_key
     |> get_values
   end
 
-  @spec get_metric_values(metric_name, :exometer.datapoint) :: {:ok, integer} | {:error, :not_found}
+  @spec get_metric_values(metric_name, :exometer.datapoint()) ::
+          {:ok, integer} | {:error, :not_found}
   def get_metric_values(metric_name, data_point) do
-    metric_val = metric_name
-    |> get_metric_values
-    |> get_values_total(data_point)
+    metric_val =
+      metric_name
+      |> get_metric_values
+      |> get_values_total(data_point)
 
     case metric_val do
       :not_found -> {:error, :not_found}
@@ -219,16 +233,17 @@ defmodule Elixometer do
   end
 
   defp to_exometer_key(metric_name) when is_list(metric_name), do: metric_name
+
   defp to_exometer_key(metric_name) when is_binary(metric_name) do
     String.split(metric_name, ".")
   end
 
   defp get_values(key) when is_list(key) do
-    :exometer.get_values((key -- ["_"]) ++ [:_]) 
+    :exometer.get_values((key -- ["_"]) ++ [:_])
   end
 
   defp get_values_total(values, data_point) do
-    Enum.reduce_while(values, 0, fn({_, attrs}, total) ->
+    Enum.reduce_while(values, 0, fn {_, attrs}, total ->
       case Keyword.get(attrs, data_point) do
         nil -> {:halt, :not_found}
         value -> {:cont, total + value}
@@ -240,8 +255,9 @@ defmodule Elixometer do
   Updates a histogram with a new value. If the metric doesn't exist, a new metric
   is created and subscribed to.
   """
-  @spec update_histogram(String.t, number, pos_integer, boolean) :: :ok
-  def update_histogram(name, delta, aggregate_seconds \\ 60, truncate \\ true) when is_bitstring(name) do
+  @spec update_histogram(String.t(), number, pos_integer, boolean) :: :ok
+  def update_histogram(name, delta, aggregate_seconds \\ 60, truncate \\ true)
+      when is_bitstring(name) do
     Updater.histogram(name, delta, aggregate_seconds, truncate)
   end
 
@@ -250,7 +266,7 @@ defmodule Elixometer do
   of internal slots that "age out" and are replaced by newer values. This is useful for
   maintaining QPS stats.
   """
-  @spec update_spiral(String.t, number, [time_span: pos_integer, slot_period: pos_integer]) :: :ok
+  @spec update_spiral(String.t(), number, time_span: pos_integer, slot_period: pos_integer) :: :ok
   def update_spiral(name, delta, opts \\ [time_span: :timer.seconds(60), slot_period: 1000]) do
     Updater.spiral(name, delta, opts)
   end
@@ -262,8 +278,9 @@ defmodule Elixometer do
   If the value of the `:reset_seconds` option is greater than zero, the counter will be reset
   automatically at the specified interval.
   """
-  @spec update_counter(String.t, integer, [reset_seconds: nil | integer]) :: :ok
-  def update_counter(name, delta, [reset_seconds: secs] \\ [reset_seconds: nil]) when is_bitstring(name) and (is_nil(secs) or secs >= 1) do
+  @spec update_counter(String.t(), integer, reset_seconds: nil | integer) :: :ok
+  def update_counter(name, delta, [reset_seconds: secs] \\ [reset_seconds: nil])
+      when is_bitstring(name) and (is_nil(secs) or secs >= 1) do
     Updater.counter(name, delta, secs)
   end
 
@@ -274,7 +291,8 @@ defmodule Elixometer do
   def clear_counter(metric_name) when is_bitstring(metric_name) do
     clear_counter(name_to_exometer(:counters, metric_name))
   end
-  def clear_counter(metric_name) when is_list(metric_name)  do
+
+  def clear_counter(metric_name) when is_list(metric_name) do
     :exometer.reset(metric_name)
   end
 
@@ -282,7 +300,7 @@ defmodule Elixometer do
   Updates a gauge metric. If the metric doesn't exist, the metric is created
   and the metric is subscribed to the default reporter.
   """
-  @spec update_gauge(String.t, number) :: :ok
+  @spec update_gauge(String.t(), number) :: :ok
   def update_gauge(name, value) when is_bitstring(name) do
     Updater.gauge(name, value)
   end
@@ -387,13 +405,16 @@ defmodule Elixometer do
   end
 
   def handle_info(:tick, config) do
-    Enum.each(config.counters,
-      fn({name, millis}) ->
+    Enum.each(
+      config.counters,
+      fn {name, millis} ->
         {:ok, [ms_since_reset: since_reset]} = :exometer.get_value(name, :ms_since_reset)
+
         if millis && since_reset >= millis do
           :exometer.reset(name)
         end
-      end)
+      end
+    )
 
     {:noreply, config}
   end
@@ -410,11 +431,14 @@ defmodule Elixometer do
 
       if reporter do
         metric_name
-        |> :exometer.info
+        |> :exometer.info()
         |> get_datapoints()
         |> Enum.reject(&Enum.member?(excluded_datapoints, &1))
-        |> Enum.map(&(:exometer_report.subscribe(reporter, metric_name, &1, interval, subscribe_options)))
+        |> Enum.map(
+          &:exometer_report.subscribe(reporter, metric_name, &1, interval, subscribe_options)
+        )
       end
+
       :ets.insert(@elixometer_table, {{:subscriptions, metric_name}, true})
     end
   end
@@ -423,6 +447,7 @@ defmodule Elixometer do
     case Keyword.fetch(info, :datapoints) do
       {:ok, datapoints} ->
         datapoints
+
       :error ->
         info
         |> Keyword.fetch!(:value)
