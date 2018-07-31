@@ -10,11 +10,13 @@ matrix:
     otp_release: 20.2
   - elixir: 1.6
     otp_release: 20.2
+  - elixir: 1.7
+    otp_release: 21.0
     env: CMD=coveralls.travis
 env:
   - CMD=test
 script:
-  - if [[ $TRAVIS_ELIXIR_VERSION = *"1.6"* ]]; then mix format --check-formatted; fi
+  - if [[ $TRAVIS_ELIXIR_VERSION = *"1.7"* ]]; then mix format --check-formatted; fi
   - MIX_ENV=test mix deps.compile
   - MIX_ENV=test mix $CMD
 cache:
