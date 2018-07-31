@@ -15,6 +15,7 @@ env:
   - CMD=test
 script:
   - MIX_ENV=test mix deps.compile
+  - MIX_ENC=test mix compile --force --warnings-as-errors
   - MIX_ENV=test mix $CMD
 cache:
   directories:
