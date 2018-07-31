@@ -10,7 +10,7 @@ defmodule Elixometer.TestReporter do
     {:ok, state}
   end
 
-  def exometer_report(_metric, _datapoint, _extra, _value,  state) do
+  def exometer_report(_metric, _datapoint, _extra, _value, state) do
     {:ok, state}
   end
 
@@ -25,18 +25,18 @@ defmodule Elixometer.TestReporter do
   # end exometer callbacks
 
   def metric_names do
-    {:ok, names} = :exometer_report.list_metrics
-    Enum.map(names, fn({name, _, _, _}) ->  name end)
+    {:ok, names} = :exometer_report.list_metrics()
+    Enum.map(names, fn {name, _, _, _} -> name end)
   end
 
   def subscriptions do
     Application.get_env(:elixometer, :reporter)
-    |> :exometer_report.list_subscriptions
-    |> Enum.map(fn({metric_name, datapoint, _, _}) -> {metric_name, datapoint} end)
+    |> :exometer_report.list_subscriptions()
+    |> Enum.map(fn {metric_name, datapoint, _, _} -> {metric_name, datapoint} end)
   end
 
   def subscription_names do
-    Enum.map(subscriptions(), fn({name, _datapoint}) -> name end)
+    Enum.map(subscriptions(), fn {name, _datapoint} -> name end)
   end
 
   def value_for(metric_name, datapoint) when is_bitstring(metric_name) do
@@ -58,7 +58,7 @@ defmodule Elixometer.TestReporter do
 
   def options_for(metric_name) do
     Application.get_env(:elixometer, :reporter)
-    |> :exometer_report.list_subscriptions
+    |> :exometer_report.list_subscriptions()
     |> Enum.find_value(fn
       {^metric_name, _, _, extra} -> extra
       _ -> nil

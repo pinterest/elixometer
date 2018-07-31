@@ -22,7 +22,6 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 
-config :elixometer, Elixometer.Updater,
-  max_messages: 1000
+config :elixometer, Elixometer.Updater, max_messages: 1000
 
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

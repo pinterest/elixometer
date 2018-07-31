@@ -8,9 +8,7 @@ defmodule Elixometer.Supervisor do
   end
 
   def init([]) do
-    children = [worker(Elixometer, []),
-                worker(Elixometer.Updater, [])
-               ]
+    children = [worker(Elixometer, []), worker(Elixometer.Updater, [])]
     supervise(children, strategy: :one_for_one)
   end
 end
