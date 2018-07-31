@@ -18,7 +18,7 @@ defmodule Elixometer.Mixfile do
      package: package(),
      deps: deps(),
      test_coverage: [tool: ExCoveralls],
-     preferred_cli_env: ["coveralls": :test,
+     preferred_cli_env: [coveralls: :test,
                          "coveralls.detail": :test,
                          "coveralls.html": :test,
                          "coveralls.post": :test],
