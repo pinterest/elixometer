@@ -14,7 +14,7 @@ matrix:
 env:
   - CMD=test
 script:
-  - if [[ `elixir -v` = *"1.6"* ]]; then mix format --check-formatted; fi
+  - if [[ $TRAVIS_ELIXIR_VERSION = *"1.6"* ]]; then mix format --check-formatted; fi
   - MIX_ENV=test mix deps.compile
   - MIX_ENV=test mix $CMD
 cache:
