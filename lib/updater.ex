@@ -55,7 +55,9 @@ defmodule Elixometer.Updater do
     monitor = formatter.(:histograms, name)
 
     ensure_registered(monitor, fn ->
-      :exometer.new(monitor, :histogram,
+      :exometer.new(
+        monitor,
+        :histogram,
         time_span: :timer.seconds(aggregate_seconds),
         truncate: truncate
       )
