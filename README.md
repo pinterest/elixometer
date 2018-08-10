@@ -59,7 +59,22 @@ config :elixometer, Elixometer.Updater,
   formatter: MyApp.Formatter
 ```
 
-A formatting function can also be used as the configuration entry:
+A formatting module implements the `Elixometer.Formatter` behaviour and implements
+a single function, `format` as such:
+
+```elixir
+defmodule MyApp.Formatter do
+  @behaviour Elixometer.Formatter
+
+  def format(metric_type, name) do
+    # do your formatting here
+    # return [String.t()]
+  end
+end
+```
+
+A formatting function can also be used as the configuration entry, provided it follows
+the same signature as a formatting module:
 ```elixir
 config :elixometer, Elixometer.Updater,
   formatter: &MyApp.Formatter.format/2

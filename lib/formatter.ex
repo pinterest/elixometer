@@ -1,3 +1,4 @@
 defmodule Elixometer.Formatter do
-  @callback format(String.t(), String.t()) :: [String.t()]
+  @type metric_type :: :counter | :gauge | :histograms | :spirals | :timer
+  @callback format(metric_type, String.t()) :: [String.t()]
 end
