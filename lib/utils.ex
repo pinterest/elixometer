@@ -1,5 +1,8 @@
 defmodule Elixometer.Utils do
   @moduledoc false
+  @behaviour Elixometer.Formatter
+
+  def format(metric_type, name), do: name_to_exometer(metric_type, name)
 
   # Name may already have been converted elsewhere.
   def name_to_exometer(_metric_type, name) when is_list(name) do
