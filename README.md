@@ -59,6 +59,12 @@ config :elixometer, Elixometer.Updater,
   formatter: MyApp.Formatter
 ```
 
+A formatting function can also be used as the configuration entry:
+```elixir
+config :elixometer, Elixometer.Updater,
+  formatter: &MyApp.Formatter.format/2
+```
+
 Elixometer uses [`pobox`](https://github.com/ferd/pobox) to prevent overload.
 A maximum size of message buffer, defaulting to 1000, can be configured with:
 
