@@ -2,7 +2,7 @@ defmodule Elixometer.Updater do
   @moduledoc false
 
   @max_messages 1000
-  @default_formatter &Elixometer.Utils.name_to_exometer/2
+  @default_formatter Elixometer.Utils
 
   import Elixometer, only: [ensure_registered: 2, add_counter: 2, add_counter: 1]
   use GenServer
@@ -52,7 +52,7 @@ defmodule Elixometer.Updater do
   end
 
   def do_update({:histogram, name, delta, aggregate_seconds, truncate}, formatter) do
-    monitor = formatter.(:histograms, name)
+    monitor = formatter.format(:histograms, name)
 
     ensure_registered(monitor, fn ->
       :exometer.new(
@@ -67,7 +67,7 @@ defmodule Elixometer.Updater do
   end
 
   def do_update({:spiral, name, delta, opts}, formatter) do
-    monitor = formatter.(:spirals, name)
+    monitor = formatter.format(:spirals, name)
 
     ensure_registered(monitor, fn ->
       :exometer.new(monitor, :spiral, opts)
@@ -77,7 +77,7 @@ defmodule Elixometer.Updater do
   end
 
   def do_update({:counter, name, delta, reset_seconds}, formatter) do
-    monitor = formatter.(:counters, name)
+    monitor = formatter.format(:counters, name)
 
     ensure_registered(monitor, fn ->
       :exometer.new(monitor, :counter, [])
@@ -93,7 +93,7 @@ defmodule Elixometer.Updater do
   end
 
   def do_update({:gauge, name, value}, formatter) do
-    monitor = formatter.(:gauges, name)
+    monitor = formatter.format(:gauges, name)
 
     ensure_registered(monitor, fn ->
       :exometer.new(monitor, :gauge, [])
@@ -103,7 +103,7 @@ defmodule Elixometer.Updater do
   end
 
   def do_update({:timer, name, units, elapsed_us}, formatter) do
-    timer = formatter.(:timers, name)
+    timer = formatter.format(:timers, name)
 
     ensure_registered(timer, fn ->
       :exometer.new(timer, :histogram, [])

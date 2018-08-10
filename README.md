@@ -51,12 +51,12 @@ By default, metrics are formatted using `Elixometer.Utils.name_to_exometer/2`.
 This function takes care of composing metric names with prefix, environment and
 the metric type (e.g. `myapp_prefix.dev.timers.request_time`).
 
-This behaviour can be overridden with a custom formatter function, by adding the
-following configuration entry:
+This behaviour can be overridden with a custom formatter module (implementing the
+`Elixometer.Formatter` behaviour) by adding the following configuration entry:
 
 ```elixir
 config :elixometer, Elixometer.Updater,
-  formatter: &MyApp.Metrics.my_custom_formatter/2
+  formatter: MyApp.Formatter
 ```
 
 Elixometer uses [`pobox`](https://github.com/ferd/pobox) to prevent overload.
