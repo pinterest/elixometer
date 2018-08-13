@@ -66,9 +66,9 @@ a single function, `format` as such:
 defmodule MyApp.Formatter do
   @behaviour Elixometer.Formatter
 
+  # If you prefer to hyphen-separate your strings, perhaps
   def format(metric_type, name) do
-    # do your formatting here
-    # return [String.t()]
+    String.split("#{metric_type}-#{name}", "-")
   end
 end
 ```
