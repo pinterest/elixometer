@@ -47,7 +47,7 @@ You can use an environment variable to set the `env`.
 config :elixometer, env: {:system, "ELIXOMETER_ENV"}
 ```
 
-By default, metrics are formatted using `Elixometer.Utils.name_to_exometer/2`.
+By default, metrics are formatted using `Elixometer.Utils.format/2`.
 This function takes care of composing metric names with prefix, environment and
 the metric type (e.g. `myapp_prefix.dev.timers.request_time`).
 

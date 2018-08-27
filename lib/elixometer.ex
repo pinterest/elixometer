@@ -289,7 +289,7 @@ defmodule Elixometer do
   """
   @spec clear_counter(metric_name) :: :ok | {:error, any}
   def clear_counter(metric_name) when is_bitstring(metric_name) do
-    clear_counter(name_to_exometer(:counters, metric_name))
+    clear_counter(format(:counters, metric_name))
   end
 
   def clear_counter(metric_name) when is_list(metric_name) do
