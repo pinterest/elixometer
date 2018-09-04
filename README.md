@@ -47,16 +47,37 @@ You can use an environment variable to set the `env`.
 config :elixometer, env: {:system, "ELIXOMETER_ENV"}
 ```
 
-By default, metrics are formatted using `Elixometer.Utils.name_to_exometer/2`.
+By default, metrics are formatted using `Elixometer.Utils.format/2`.
 This function takes care of composing metric names with prefix, environment and
 the metric type (e.g. `myapp_prefix.dev.timers.request_time`).
 
-This behaviour can be overridden with a custom formatter function, by adding the
-following configuration entry:
+This behaviour can be overridden with a custom formatter module (implementing the
+`Elixometer.Formatter` behaviour) by adding the following configuration entry:
 
 ```elixir
 config :elixometer, Elixometer.Updater,
-  formatter: &MyApp.Metrics.my_custom_formatter/2
+  formatter: MyApp.Formatter
+```
+
+A formatting module implements the `Elixometer.Formatter` behaviour and implements
+a single function, `format` as such:
+
+```elixir
+defmodule MyApp.Formatter do
+  @behaviour Elixometer.Formatter
+
+  # If you prefer to hyphen-separate your strings, perhaps
+  def format(metric_type, name) do
+    String.split("#{metric_type}-#{name}", "-")
+  end
+end
+```
+
+A formatting function can also be used as the configuration entry, provided it follows
+the same signature as a formatting module:
+```elixir
+config :elixometer, Elixometer.Updater,
+  formatter: &MyApp.Formatter.format/2
 ```
 
 Elixometer uses [`pobox`](https://github.com/ferd/pobox) to prevent overload.
