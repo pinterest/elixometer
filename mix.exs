@@ -62,7 +62,7 @@ defmodule Elixometer.Mixfile do
       # https://github.com/basho/lager/pull/321
       {:lager, ">= 3.2.1", override: true},
       # Force rebar so that setup can build, does not build with rebar3 base compiler
-      {:setup, "1.8.4", override: true, manager: :rebar},
+      {:setup, "2.0.2", override: true, manager: :rebar},
       {:exometer_core, "~> 1.4"},
       {:credo, "~> 0.8", only: [:dev, :test]},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
