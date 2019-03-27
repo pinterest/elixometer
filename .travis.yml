@@ -13,6 +13,9 @@ matrix:
   - elixir: 1.7
     otp_release: 21.0
     env: CMD=coveralls.travis
+  - elixir: 1.8
+    otp_release: 21.0
+    env: CMD=coveralls.travis
 env:
   - CMD=test
 script:
