@@ -64,7 +64,7 @@ defmodule Elixometer.Mixfile do
       # Force rebar so that setup can build, does not build with rebar3 base compiler
       {:setup, "2.0.2", manager: :rebar},
       {:exometer_core, "~> 1.5"},
-      {:credo, "~> 0.8", only: [:dev, :test]},
+      {:credo, "~> 1.1", only: [:dev, :test]},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
       {:ex_doc, "~> 0.18", only: :dev},
       {:excoveralls, "~> 0.11", only: [:dev, :test]},
