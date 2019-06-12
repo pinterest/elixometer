@@ -74,7 +74,7 @@ defmodule Elixometer.Mixfile do
 
   defp package do
     [
-      files: ["config", "lib", "mix.exs", "mix.lock", "README.md", "LICENSE"],
+      files: ["config", "lib", "mix.exs", "mix.lock", "CHANGELOG.md", "README.md", "LICENSE"],
       maintainers: ["Jon Parise", "Steve Cohen"],
       licenses: ["Apache 2.0"],
       links: %{"GitHub" => @project_url}
