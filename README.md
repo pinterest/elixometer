@@ -157,7 +157,7 @@ def application do
 end
 
 defp deps do
-  [{:exometer_core, github: "PSPDFKit-labs/exometer_core"}]
+  [{:exometer_core, github: "Feuerlabs/exometer_core"}]
 end
 ```
 
