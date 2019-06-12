@@ -12,7 +12,7 @@ defmodule Elixometer.Mixfile do
     [
       app: :elixometer,
       version: "1.3.0-dev",
-      elixir: ">= 1.3.0",
+      elixir: ">= 1.5.0",
       description: @description,
       source_url: @project_url,
       homepage_url: @project_url,
