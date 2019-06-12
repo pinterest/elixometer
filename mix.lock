@@ -21,7 +21,7 @@
   "metrics": {:hex, :metrics, "1.0.1", "25f094dea2cda98213cecc3aeff09e940299d950904393b2a29d191c346a8486", [:rebar3], []},
   "mimerl": {:hex, :mimerl, "1.2.0", "67e2d3f571088d5cfd3e550c383094b47159f3eee8ffa08e64106cdf5e981be3", [:rebar3], [], "hexpm"},
   "parse_trans": {:hex, :parse_trans, "3.3.0", "09765507a3c7590a784615cfd421d101aec25098d50b89d7aa1d66646bc571c1", [:rebar3], [], "hexpm"},
-  "pobox": {:hex, :pobox, "1.0.3", "4414d0c307e7fb7fa109cbe2483bf5741f0ef41b85250d0cecf45b066cbe93c1", [:rebar3], []},
+  "pobox": {:hex, :pobox, "1.2.0", "3127cb48f13d18efec7a9ea2622077f4f9c5f067cc1182af1977dacd7a74fdb8", [:rebar3], [], "hexpm"},
   "setup": {:hex, :setup, "2.0.2", "1203f4cda11306c2e34434244576ded0a7bbfb0908d9a572356c809bd0cdf085", [:rebar3], []},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.4", "f0eafff810d2041e93f915ef59899c923f4568f4585904d010387ed74988e77b", [:make, :mix, :rebar3], [], "hexpm"},
   "ssl_verify_hostname": {:hex, :ssl_verify_hostname, "1.0.5", "2e73e068cd6393526f9fa6d399353d7c9477d6886ba005f323b592d389fb47be", [:make], []},
