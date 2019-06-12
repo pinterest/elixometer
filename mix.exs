@@ -66,7 +66,7 @@ defmodule Elixometer.Mixfile do
       {:exometer_core, "~> 1.5"},
       {:credo, "~> 1.1", only: [:dev, :test]},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
-      {:ex_doc, "~> 0.18", only: :dev},
+      {:ex_doc, "~> 0.20", only: :dev},
       {:excoveralls, "~> 0.11", only: [:dev, :test]},
       {:pobox, "~> 1.2"}
     ]
