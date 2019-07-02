@@ -61,8 +61,6 @@ defmodule Elixometer.Mixfile do
       # lager 3.2.1 is needed for erl19 because of
       # https://github.com/basho/lager/pull/321
       {:lager, ">= 3.2.1"},
-      # Force rebar so that setup can build, does not build with rebar3 base compiler
-      {:setup, "2.0.2", manager: :rebar},
       {:exometer_core, "~> 1.5"},
       {:credo, "~> 1.1", only: [:dev, :test]},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
