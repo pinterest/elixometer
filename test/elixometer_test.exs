@@ -70,6 +70,14 @@ defmodule ElixometerTest do
     :timer.sleep(50)
   end
 
+  # Remove the :ms_since_reset entries from a list of metric values because
+  # they introduce non-determinism within test runs.
+  defp without_ms_since_reset(values) do
+    Enum.reduce(values, [], fn {key, list}, acc ->
+      [acc | {key, Keyword.delete(list, :ms_since_reset)}]
+    end)
+  end
+
   defp metric_exists?(metric_name) when is_bitstring(metric_name) do
     metric_name |> String.split(".") |> metric_exists?
   end
@@ -377,8 +385,8 @@ defmodule ElixometerTest do
 
     wait_for_messages()
 
-    assert :exometer.get_values(["elixometer", "test", "gauges", :_]) ==
-             get_metric_values("elixometer.test.gauges._")
+    assert without_ms_since_reset(:exometer.get_values(["elixometer", "test", "gauges", :_])) ==
+             without_ms_since_reset(get_metric_values("elixometer.test.gauges._"))
   end
 
   test "getting a specific metric" do
