@@ -428,19 +428,43 @@ defmodule Elixometer do
       interval = cfg[:update_frequency]
       subscribe_options = cfg[:subscribe_options] || []
       excluded_datapoints = cfg[:excluded_datapoints] || []
+      bulk_subscribe? = cfg[:bulk_subscribe] || false
 
       if reporter do
         metric_name
         |> :exometer.info()
         |> get_datapoints()
         |> Enum.reject(&Enum.member?(excluded_datapoints, &1))
-        |> Enum.map(
-          &:exometer_report.subscribe(reporter, metric_name, &1, interval, subscribe_options)
-        )
+        |> do_subscribe(reporter, metric_name, interval, subscribe_options, bulk_subscribe?)
       end
 
       :ets.insert(@elixometer_table, {{:subscriptions, metric_name}, true})
     end
+  end
+
+  defp do_subscribe(
+         data_points,
+         reporter,
+         metric_name,
+         interval,
+         subscribe_options,
+         _bulk_subscribe? = true
+       ) do
+    :exometer_report.subscribe(reporter, metric_name, data_points, interval, subscribe_options)
+  end
+
+  defp do_subscribe(
+         data_points,
+         reporter,
+         metric_name,
+         interval,
+         subscribe_options,
+         _bulk_subscribe? = false
+       ) do
+    Enum.map(
+      data_points,
+      &:exometer_report.subscribe(reporter, metric_name, &1, interval, subscribe_options)
+    )
   end
 
   defp get_datapoints(info) do

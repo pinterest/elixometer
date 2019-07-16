@@ -47,6 +47,22 @@ You can use an environment variable to set the `env`.
 config :elixometer, env: {:system, "ELIXOMETER_ENV"}
 ```
 
+Some reporters know how to handle multiple metrics reported at the same time. Or perhaps you want to write a custom reporter, and would like to receive all data points for a single metric all at once. 
+This can be achieved by adding the `report_bulk: true` option to the *reporter* configuration, and adding `bulk_subscribe: true` to the *elixometer* configuration. Like so:
+
+```elixir
+config :exometer_core,
+  report: [
+    reporters: [
+      {My.Custom.Reporter, [report_bulk: true]}
+    ]
+  ]
+
+config :elixometer,
+  # ...
+  bulk_subscribe: true
+```
+
 By default, metrics are formatted using `Elixometer.Utils.format/2`.
 This function takes care of composing metric names with prefix, environment and
 the metric type (e.g. `myapp_prefix.dev.timers.request_time`).
@@ -168,3 +184,14 @@ config(:elixometer,
   ...
   subscribe_options: [{:tag, :value1}])
 ```
+
+## Custom Reporters
+
+The documentation on custom reporters in `exometer` is fairly difficult to find, and isn't exactly correct. It is still quite useful though, and can be found [here](https://github.com/Feuerlabs/exometer_core/blob/master/doc/exometer_report.md).
+
+
+Your best bet is to define a module that uses the `:exometer_report` behaviour, and use `@impl` on the functions that you add to adhere to that behaviour. 
+That will make sure that each function aligns with the behaviour, and that you haven't missed any required ones.
+
+There is one function that is not included as part of the erlang behaviour, but that you may want, which is `exometer_report_bulk/3`. 
+*If and only if* you have defined that function in your reporter *and* you passed `report_bulk: true` as an option to the reporter, it will pass a list of datapoint/value pairs to your `exometer_report_bulk/3`.
