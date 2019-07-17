@@ -189,8 +189,7 @@ config(:elixometer,
 
 The documentation on custom reporters in `exometer` is fairly difficult to find, and isn't exactly correct. It is still quite useful though, and can be found [here](https://github.com/Feuerlabs/exometer_core/blob/master/doc/exometer_report.md).
 
-
-Your best bet is to define a module that uses the `:exometer_report` behaviour, and use `@impl` on the functions that you add to adhere to that behaviour. 
+Your best bet is to define a module that uses the `:exometer_report` behaviour, and use `@impl` on the functions that you add to conform to that behaviour. 
 That will make sure that each function aligns with the behaviour, and that you haven't missed any required ones.
 
 There is one function that is not included as part of the erlang behaviour, but that you may want, which is `exometer_report_bulk/3`. 
