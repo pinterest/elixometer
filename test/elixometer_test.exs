@@ -100,6 +100,18 @@ defmodule ElixometerTest do
     metric_name |> String.split(".") |> subscription_exists?(datapoint)
   end
 
+  defp subscription_exists?(metric_name, datapoint)
+       when is_list(metric_name) and is_list(datapoint) do
+    sorted_datapoint = Enum.sort(datapoint)
+
+    wait_for_messages()
+
+    Enum.any?(Reporter.subscriptions(), fn {name, subscribed_datapoints} ->
+      name == metric_name && is_list(subscribed_datapoints) &&
+        Enum.sort(subscribed_datapoints) == sorted_datapoint
+    end)
+  end
+
   defp subscription_exists?(metric_name, datapoint) when is_list(metric_name) do
     wait_for_messages()
     {metric_name, datapoint} in Reporter.subscriptions()
@@ -419,13 +431,21 @@ defmodule ElixometerTest do
              get_metric_value("elixometer.test.gauges.no_datapoint", :bad_datapoint)
   end
 
-  test "blacklisting subscriptions works" do
-    # Remove :median from the subscriptions
-    Application.put_env(:elixometer, :excluded_datapoints, [:median])
-    update_histogram("uniquelittlefoobar", 42)
-    key = ["elixometer", "test", "histograms", "uniquelittlefoobar"]
+  describe "excluded_datapoints" do
+    setup do
+      on_exit(fn ->
+        Application.put_env(:elixometer, :excluded_datapoints, [])
+      end)
+    end
 
-    refute subscription_exists?(key, :median)
+    test "blacklisting subscriptions works" do
+      # Remove :median from the subscriptions
+      Application.put_env(:elixometer, :excluded_datapoints, [:median])
+      update_histogram("uniquelittlefoobar", 42)
+      key = ["elixometer", "test", "histograms", "uniquelittlefoobar"]
+
+      refute subscription_exists?(key, :median)
+    end
   end
 
   test "getting a datapoint from a metric that doesn't exist" do
@@ -439,6 +459,26 @@ defmodule ElixometerTest do
 
     assert subscription_exists?("elixometer.test.counters.subscribe_options")
     assert [some_option: 42] = Reporter.options_for("elixometer.test.counters.subscribe_options")
+  end
+
+  describe "bulk_subscribe?" do
+    setup do
+      on_exit(fn ->
+        Application.put_env(:elixometer, :bulk_subscribe, false)
+      end)
+    end
+
+    test "when bulk_subscribe? is set to `true`, all datapoints for a metric are included in one subscription" do
+      Application.put_env(:elixometer, :bulk_subscribe, true)
+
+      update_histogram("bulk_subscribe", 1)
+      metrics = [:n, :mean, :min, :max, :median, 50, 75, 90, 95, 99, 999]
+
+      assert subscription_exists?(
+               ["elixometer", "test", "histograms", "bulk_subscribe"],
+               metrics
+             )
+    end
   end
 
   test "metrics created elsewhere can be retrieved" do
