@@ -29,10 +29,17 @@ jobs:
     - name: Check format
       if: matrix.elixir-version == '1.9'
       run: mix format --check-formatted
-    - name: Run tests
+    - name: Compile
       env:
         MIX_ENV: test
       run: |
         mix deps.compile
         mix compile --force --warnings-as-errors
-        mix test
+    - name: Run tests
+      if: matrix.elixir-version != '1.9'
+      run: mix test
+    - name: Run tests (with coverage)
+      if: matrix.elixir-version == '1.9'
+      with:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      run: mix coveralls.post
