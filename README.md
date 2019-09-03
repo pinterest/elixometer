@@ -1,9 +1,6 @@
 Elixometer
 ==========
 
-[![Build Status](https://travis-ci.org/pinterest/elixometer.svg?branch=master)](https://travis-ci.org/pinterest/elixometer)
-[![Coverage Status](https://coveralls.io/repos/pinterest/elixometer/badge.svg?branch=&service=github)](https://coveralls.io/github/pinterest/elixometer?branch=master)
-
 A light wrapper around [exometer](https://github.com/Feuerlabs/exometer).
 
 Elixometer allows you to define metrics and subscribe them automatically
