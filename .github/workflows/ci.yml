@@ -31,7 +31,7 @@ jobs:
       run: mix format --check-formatted
     - name: Run tests
       env:
-        MIX_ENV=test
+        MIX_ENV: test
       run: |
         mix deps.compile
         mix compile --force --warnings-as-errors
