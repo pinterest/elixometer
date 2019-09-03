@@ -21,10 +21,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
     - name: Install dependencies
       run: |
         mix local.rebar --force
@@ -46,4 +42,4 @@ jobs:
       if: matrix.elixir-version == '1.9'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-      run: mix coveralls.post --branch ${{ github.ref }} --sha ${{ github.sha }} --committer ${{ github.actor }}
+      run: mix coveralls.post --branch ${{ github.head_ref }} --sha ${{ github.sha }} --committer ${{ github.actor }}
