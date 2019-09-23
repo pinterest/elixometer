@@ -65,7 +65,10 @@ defmodule Elixometer.Mixfile do
       {:credo, "~> 1.1", only: [:dev, :test]},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
       {:ex_doc, "~> 0.20", only: :dev},
-      {:excoveralls, "~> 0.11", only: [:dev, :test]},
+      {:excoveralls,
+       git: "https://github.com/jparise/excoveralls.git",
+       tag: "github-actions",
+       only: [:dev, :test]},
       {:pobox, "~> 1.2"}
     ]
   end
