@@ -10,7 +10,7 @@ to the default reporter for your environment.
 Add the following to your dependencies in mix.exs:
 
 ```elixir
-{:elixometer, "~> 1.2"}
+{:elixometer, "~> 1.3"}
 ```
 
 Or to track the master development branch:
