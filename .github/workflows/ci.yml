@@ -21,24 +21,36 @@ jobs:
     env:
       MIX_ENV: test
     steps:
-    - uses: actions/checkout@v1
-    - name: Install dependencies
-      run: |
-        mix local.rebar --force
-        mix local.hex --force
-        mix deps.get
-    - name: Check format
-      if: matrix.elixir-version == '1.9'
-      run: mix format --check-formatted
-    - name: Compile
-      run: |
-        mix deps.compile
-        mix compile --force --warnings-as-errors
-    - name: Run tests
-      if: matrix.elixir-version != '1.9'
-      run: mix test
-    - name: Run tests (with coverage)
-      if: matrix.elixir-version == '1.9'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: mix coveralls.github
+      - uses: actions/checkout@v1
+      - name: Get dependency cache
+        uses: actions/cache@v1
+        with:
+          path: deps/
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-deps-
+      - name: Get build cache
+        uses: actions/cache@v1
+        with:
+          path: _build/test/
+          key: ${{ runner.os }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-build-
+      - name: Install dependencies
+        run: |
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+      - name: Check format
+        if: matrix.elixir-version == '1.9'
+        run: mix format --check-formatted
+      - name: Compile
+        run: |
+          mix deps.compile
+          mix compile --force --warnings-as-errors
+      - name: Run tests
+        if: matrix.elixir-version != '1.9'
+        run: mix test
+      - name: Run tests (with coverage)
+        if: matrix.elixir-version == '1.9'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mix coveralls.github
