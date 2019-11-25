@@ -1,4 +1,5 @@
-name: Elixir
+---
+name: CI
 
 on:
   push:
@@ -10,15 +11,15 @@ on:
 
 jobs:
   build:
-
+    name: Elixir ${{ matrix.elixir-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         elixir-version: [1.5, 1.6, 1.7, 1.8, 1.9]
-
     container:
-      image: elixir:${{ matrix.elixir-version }}-slim
-
+      image: elixir:${{ matrix.elixir-version }}
+    env:
+      MIX_ENV: test
     steps:
     - uses: actions/checkout@v1
     - name: Install dependencies
@@ -30,8 +31,6 @@ jobs:
       if: matrix.elixir-version == '1.9'
       run: mix format --check-formatted
     - name: Compile
-      env:
-        MIX_ENV: test
       run: |
         mix deps.compile
         mix compile --force --warnings-as-errors
@@ -41,5 +40,5 @@ jobs:
     - name: Run tests (with coverage)
       if: matrix.elixir-version == '1.9'
       env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-      run: mix coveralls.post --branch ${{ github.head_ref }} --sha ${{ github.sha }} --committer ${{ github.actor }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: mix coveralls.github
