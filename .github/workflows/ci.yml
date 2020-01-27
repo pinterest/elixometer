@@ -11,17 +11,20 @@ on:
 
 jobs:
   build:
-    name: Elixir ${{ matrix.elixir-version }}
+    name: OTP ${{ matrix.otp-version }} / Elixir ${{ matrix.elixir-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        otp-version: [20.3, 21.3, 22.2]
         elixir-version: [1.5, 1.6, 1.7, 1.8, 1.9]
-    container:
-      image: elixir:${{ matrix.elixir-version }}
     env:
       MIX_ENV: test
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/setup-elixir@v1.2.0
+        with:
+          otp-version: ${{ matrix.otp-version }}
+          elixir-version: ${{ matrix.elixir-version }}
       - name: Get dependency cache
         uses: actions/cache@v1
         with:
