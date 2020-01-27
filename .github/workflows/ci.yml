@@ -10,47 +10,63 @@ on:
       - master
 
 jobs:
-  build:
-    name: Elixir ${{ matrix.elixir-version }}
+  format:
+    name: Format
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        elixir-version: [1.5, 1.6, 1.7, 1.8, 1.9]
-    container:
-      image: elixir:${{ matrix.elixir-version }}
     env:
       MIX_ENV: test
     steps:
       - uses: actions/checkout@v1
-      - name: Get dependency cache
+      - uses: actions/setup-elixir@v1.2.0
+        with:
+          otp-version: 22.2
+          elixir-version: 1.9
+      - name: Install dependencies
+        run: mix deps.get
+      - name: Check format
+        run: mix format --check-formatted
+  test:
+    name: OTP ${{ matrix.otp }} / Elixir ${{ matrix.elixir }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        otp: [20.3, 22.2]
+        elixir: [1.5, 1.6, 1.7, 1.8, 1.9]
+    env:
+      MIX_ENV: test
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-elixir@v1.2.0
+        with:
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+      - name: Set up dependency cache
         uses: actions/cache@v1
         with:
           path: deps/
-          key: ${{ runner.os }}-deps-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-deps-
-      - name: Get build cache
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-
+      - name: Set up build cache
         uses: actions/cache@v1
         with:
           path: _build/test/
-          key: ${{ runner.os }}-build-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-build-
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-
       - name: Install dependencies
         run: |
           mix local.rebar --force
           mix local.hex --force
           mix deps.get
-      - name: Check format
-        if: matrix.elixir-version == '1.9'
-        run: mix format --check-formatted
       - name: Compile
         run: |
           mix deps.compile
           mix compile --force --warnings-as-errors
       - name: Run tests
-        if: matrix.elixir-version != '1.9'
+        if: matrix.elixir != '1.9'
         run: mix test
       - name: Run tests (with coverage)
-        if: matrix.elixir-version == '1.9'
+        if: matrix.elixir == '1.9'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mix coveralls.github
