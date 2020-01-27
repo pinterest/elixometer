@@ -29,6 +29,7 @@ jobs:
     name: OTP ${{ matrix.otp }} / Elixir ${{ matrix.elixir }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         otp: [20.3, 22.2]
         elixir: [1.5, 1.6, 1.7, 1.8, 1.9]
@@ -40,13 +41,13 @@ jobs:
         with:
           otp-version: ${{ matrix.otp }}
           elixir-version: ${{ matrix.elixir }}
-      - name: Get dependency cache
+      - name: Set up dependency cache
         uses: actions/cache@v1
         with:
           path: deps/
           key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-
-      - name: Get build cache
+      - name: Set up build cache
         uses: actions/cache@v1
         with:
           path: _build/test/
