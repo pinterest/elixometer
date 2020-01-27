@@ -12,6 +12,7 @@ on:
 jobs:
   format:
     name: Format
+    runs-on: ubuntu-latest
     env:
       MIX_ENV: test
     steps:
