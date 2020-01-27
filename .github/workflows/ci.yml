@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: OTP ${{ matrix.otp-version }} / Elixir ${{ matrix.elixir-version }}
+    name: OTP ${{ matrix.otp }} / Elixir ${{ matrix.elixir }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -23,37 +23,37 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-elixir@v1.2.0
         with:
-          otp-version: ${{ matrix.otp-version }}
-          elixir-version: ${{ matrix.elixir-version }}
-      # - name: Get dependency cache
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: deps/
-      #     key: ${{ runner.os }}-deps-${{ hashFiles('**/mix.lock') }}
-      #     restore-keys: ${{ runner.os }}-deps-
-      # - name: Get build cache
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: _build/test/
-      #     key: ${{ runner.os }}-build-${{ hashFiles('**/mix.lock') }}
-      #     restore-keys: ${{ runner.os }}-build-
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+      - name: Get dependency cache
+        uses: actions/cache@v1
+        with:
+          path: deps/
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-
+      - name: Get build cache
+        uses: actions/cache@v1
+        with:
+          path: _build/test/
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-
       - name: Install dependencies
         run: |
           mix local.rebar --force
           mix local.hex --force
           mix deps.get
       - name: Check format
-        if: matrix.elixir-version == '1.9'
+        if: matrix.elixir == '1.9'
         run: mix format --check-formatted
       - name: Compile
         run: |
           mix deps.compile
           mix compile --force --warnings-as-errors
       - name: Run tests
-        if: matrix.elixir-version != '1.9'
+        if: matrix.elixir != '1.9'
         run: mix test
       - name: Run tests (with coverage)
-        if: matrix.elixir-version == '1.9'
+        if: matrix.elixir == '1.9'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mix coveralls.github
