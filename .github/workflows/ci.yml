@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        otp-version: [20.3, 22.2]
-        elixir-version: [1.5, 1.6, 1.7, 1.8, 1.9]
+        otp: [20.3, 22.2]
+        elixir: [1.5, 1.6, 1.7, 1.8, 1.9]
     env:
       MIX_ENV: test
     steps:
