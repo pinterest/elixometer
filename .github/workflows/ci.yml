@@ -17,10 +17,10 @@ jobs:
       MIX_ENV: test
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/setup-elixir@v1.2.0
+      - uses: actions/setup-elixir@v1
         with:
           otp-version: 22.2
-          elixir-version: 1.9
+          elixir-version: '1.10'
       - name: Install dependencies
         run: mix deps.get
       - name: Check format
@@ -31,13 +31,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        otp: [20.3, 22.2]
-        elixir: [1.5, 1.6, 1.7, 1.8, 1.9]
+        otp: [22.2]
+        elixir: [1.5, 1.6, 1.7, 1.8, 1.9, '1.10']
     env:
       MIX_ENV: test
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/setup-elixir@v1.2.0
+      - uses: actions/setup-elixir@v1
         with:
           otp-version: ${{ matrix.otp }}
           elixir-version: ${{ matrix.elixir }}
@@ -55,18 +55,16 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-
       - name: Install dependencies
         run: |
-          mix local.rebar --force
-          mix local.hex --force
           mix deps.get
       - name: Compile
         run: |
           mix deps.compile
           mix compile --force --warnings-as-errors
       - name: Run tests
-        if: matrix.elixir != '1.9'
+        if: matrix.elixir != '1.10'
         run: mix test
       - name: Run tests (with coverage)
-        if: matrix.elixir == '1.9'
+        if: matrix.elixir == '1.10'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mix coveralls.github
