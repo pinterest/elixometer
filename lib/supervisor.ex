@@ -4,11 +4,12 @@ defmodule Elixometer.Supervisor do
   use Supervisor
 
   def start_link do
-    Supervisor.start_link(__MODULE__, [])
+    Supervisor.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  @impl true
   def init([]) do
-    children = [worker(Elixometer, []), worker(Elixometer.Updater, [])]
-    supervise(children, strategy: :one_for_one)
+    children = [Elixometer, Elixometer.Updater]
+    Supervisor.init(children, strategy: :one_for_one)
   end
 end

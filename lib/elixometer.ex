@@ -178,15 +178,15 @@ defmodule Elixometer do
     end
   end
 
-  def init(:ok) do
+  def init(_args) do
     table_name = :ets.new(@elixometer_table, [:set, :named_table, read_concurrency: true])
     :timer.send_interval(250, :tick)
 
     {:ok, %Config{table_name: table_name}}
   end
 
-  def start_link do
-    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
+  def start_link(args) do
+    GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
 
   @spec get_metric_value(metric_name) :: {:ok, any} | {:error, :not_found}

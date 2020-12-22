@@ -7,7 +7,7 @@ defmodule Elixometer.Updater do
   import Elixometer, only: [ensure_registered: 2, add_counter: 2, add_counter: 1]
   use GenServer
 
-  def init([]) do
+  def init(_args) do
     config = Application.get_env(:elixometer, __MODULE__, [])
     max_messages = Keyword.get(config, :max_messages, @max_messages)
     formatter = Keyword.get(config, :formatter, @default_formatter)
@@ -17,8 +17,8 @@ defmodule Elixometer.Updater do
     {:ok, %{formatter: formatter}}
   end
 
-  def start_link do
-    GenServer.start_link(__MODULE__, [], name: __MODULE__)
+  def start_link(args) do
+    GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
 
   def timer(name, units, elapsed) do
