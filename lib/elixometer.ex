@@ -475,7 +475,7 @@ defmodule Elixometer do
       :error ->
         info
         |> Keyword.fetch!(:value)
-        |> Keyword.keys()
+        |> Enum.map(fn {k, _v} -> k end)
     end
   end
 end
