@@ -25,8 +25,50 @@ jobs:
         run: mix deps.get
       - name: Check format
         run: mix format --check-formatted
+  dialyzer:
+    name: Dialyzer
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        otp: [22.2]
+        elixir: [1.11]
+    env:
+      MIX_ENV: dev
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-elixir@v1
+        with:
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+      - name: Set up dependency cache
+        uses: actions/cache@v1
+        with:
+          path: deps/
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-
+      - name: Set up build cache
+        uses: actions/cache@v1
+        with:
+          path: _build/test/
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-
+      - name: Set up PLT cache
+        uses: actions/cache@v1
+        with:
+          path: priv/plts/
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-plt-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-plt-
+      - name: Install dependencies
+        run: mix deps.get --only dev
+      - name: Compile
+        run: |
+          mix deps.compile
+          mix compile
+      - name: Run dialyzer
+        run: mix dialyzer
   test:
-    name: OTP ${{ matrix.otp }} / Elixir ${{ matrix.elixir }}
+    name: Test OTP ${{ matrix.otp }} / Elixir ${{ matrix.elixir }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

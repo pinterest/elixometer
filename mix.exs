@@ -28,7 +28,7 @@ defmodule Elixometer.Mixfile do
       elixirc_paths: elixirc_paths(Mix.env()),
 
       # Dialyzer
-      dialyzer: [plt_add_deps: :transitive],
+      dialyzer: [plt_add_deps: :transitive, plt_file: {:no_warn, "priv/plts/dialyzer.plt"}],
 
       # Docs
       name: "Elixometer",
@@ -62,7 +62,7 @@ defmodule Elixometer.Mixfile do
       # https://github.com/basho/lager/pull/321
       {:lager, ">= 3.2.1"},
       {:exometer_core, "~> 1.5"},
-      {:dialyxir, "~> 1.0", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.1.0", only: :dev, runtime: false},
       {:ex_doc, "~> 0.20", only: :dev},
       {:excoveralls, "~> 0.12", only: [:dev, :test]},
       {:pobox, "~> 1.2"}
