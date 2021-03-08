@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.0
+
+### Added
+
+- Support for Elixir 1.10 and Elixir 1.11
+
 ## 1.3.0
 
 ### Added
