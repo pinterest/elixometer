@@ -11,54 +11,63 @@ on:
 
 jobs:
   format:
-    name: Format
+    name: Format (Elixir ${{ matrix.pair.elixir }} / OTP ${{ matrix.pair.otp }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pair:
+              elixir: 1.11
+              otp: 23
     env:
       MIX_ENV: test
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-elixir@v1
+      - uses: actions/checkout@v2
+      - uses: erlef/setup-elixir@v1
         with:
-          otp-version: 22.2
-          elixir-version: '1.11'
+          otp-version: ${{ matrix.pair.otp }}
+          elixir-version: ${{ matrix.pair.elixir }}
       - name: Install dependencies
         run: mix deps.get
       - name: Check format
         run: mix format --check-formatted
   dialyzer:
-    name: Dialyzer
+    name: Dialyzer (Elixir ${{ matrix.pair.elixir }} / OTP ${{ matrix.pair.otp }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        otp: [22.2]
-        elixir: [1.11]
+        include:
+          - pair:
+              elixir: 1.11
+              otp: 23
     env:
       MIX_ENV: dev
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-elixir@v1
+      - uses: actions/checkout@v2
+      - uses: erlef/setup-elixir@v1
         with:
-          otp-version: ${{ matrix.otp }}
-          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.pair.otp }}
+          elixir-version: ${{ matrix.pair.elixir }}
       - name: Set up dependency cache
         uses: actions/cache@v1
         with:
           path: deps/
-          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-
+          key: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-deps-
       - name: Set up build cache
         uses: actions/cache@v1
         with:
           path: _build/test/
-          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-
+          key: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-build-
       - name: Set up PLT cache
         uses: actions/cache@v1
         with:
           path: priv/plts/
-          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-plt-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-plt-
+          key: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-plt-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-plt-
       - name: Install dependencies
         run: mix deps.get --only dev
       - name: Compile
@@ -68,37 +77,39 @@ jobs:
       - name: Run dialyzer
         run: mix dialyzer
   test:
-    name: Test OTP ${{ matrix.otp }} / Elixir ${{ matrix.elixir }}
+    name: Test (Elixir ${{ matrix.pair.elixir }} / OTP ${{ matrix.pair.otp }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        otp: [22.2]
-        elixir: [1.5, 1.6, 1.7, 1.8, 1.9, '1.10', 1.11]
         include:
-          - otp: 22.2
-            elixir: 1.11
-            coverage: true
+          - pair:
+              elixir: 1.5
+              otp: 22
+          - pair:
+              elixir: 1.11
+              otp: 23
+              coverage: true
     env:
       MIX_ENV: test
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-elixir@v1
+      - uses: actions/checkout@v2
+      - uses: erlef/setup-elixir@v1
         with:
-          otp-version: ${{ matrix.otp }}
-          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.pair.otp }}
+          elixir-version: ${{ matrix.pair.elixir }}
       - name: Set up dependency cache
         uses: actions/cache@v1
         with:
           path: deps/
-          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-deps-
+          key: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-deps-
       - name: Set up build cache
         uses: actions/cache@v1
         with:
           path: _build/test/
-          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-
+          key: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.pair.otp }}-${{ matrix.pair.elixir }}-build-
       - name: Install dependencies
         run: |
           mix deps.get
