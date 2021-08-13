@@ -18,8 +18,8 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.11
-              otp: 23
+              elixir: 1.12
+              otp: 24
     env:
       MIX_ENV: test
     steps:
@@ -40,8 +40,8 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.11
-              otp: 23
+              elixir: 1.12
+              otp: 24
     env:
       MIX_ENV: dev
     steps:
@@ -87,8 +87,8 @@ jobs:
               elixir: 1.5
               otp: 22
           - pair:
-              elixir: 1.11
-              otp: 23
+              elixir: 1.12
+              otp: 24
               coverage: true
     env:
       MIX_ENV: test
