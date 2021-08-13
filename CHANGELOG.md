@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.1
+
+### Added
+
+- Support for Elixir 1.12 and OTP 24
+
 ## 1.4.0
 
 ### Added

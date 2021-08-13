@@ -11,7 +11,7 @@ defmodule Elixometer.Mixfile do
   def project do
     [
       app: :elixometer,
-      version: "1.4.0",
+      version: "1.4.1",
       elixir: ">= 1.5.0",
       description: @description,
       source_url: @project_url,
@@ -61,10 +61,10 @@ defmodule Elixometer.Mixfile do
       # lager 3.2.1 is needed for erl19 because of
       # https://github.com/basho/lager/pull/321
       {:lager, ">= 3.2.1"},
-      {:exometer_core, "~> 1.5"},
+      {:exometer_core, "~> 1.6"},
       {:dialyxir, "~> 1.1.0", only: :dev, runtime: false},
-      {:ex_doc, "~> 0.20", only: :dev},
-      {:excoveralls, "~> 0.12", only: [:dev, :test]},
+      {:ex_doc, "~> 0.25", only: :dev},
+      {:excoveralls, "~> 0.14", only: [:dev, :test]},
       {:pobox, "~> 1.2"}
     ]
   end
