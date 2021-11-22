@@ -34,6 +34,7 @@ defmodule Elixometer.Mixfile do
       name: "Elixometer",
       docs: [
         main: "Elixometer",
+        source_ref: "master",
         source_url: @project_url
       ]
     ]
