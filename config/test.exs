@@ -10,5 +10,5 @@ config(
   metric_prefix: "elixometer"
 )
 
-# quiet down logging in test
-config(:lager, handlers: [lager_console_backend: [level: :critical]])
+config :logger,
+  level: :error
