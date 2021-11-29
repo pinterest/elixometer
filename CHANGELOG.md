@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0
+
+### Changed
+
+- The minimum supported Elixir version is now 1.7
+- Elixometer no longer depends on Lager
+
 ## 1.4.1
 
 ### Added
