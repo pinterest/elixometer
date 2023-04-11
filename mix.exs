@@ -59,7 +59,7 @@ defmodule Elixometer.Mixfile do
   defp deps do
     [
       {:exometer_core, "~> 1.6"},
-      {:dialyxir, "~> 1.1.0", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.3.0", only: :dev, runtime: false},
       {:ex_doc, "~> 0.25", only: :dev},
       {:excoveralls, "~> 0.14", only: [:dev, :test]},
       {:pobox, "~> 1.2"}
